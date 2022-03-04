@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Analytics Dashboard";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+
+    bool isCourier = ViewBag.CourierId > 0;
+}
+
+@section Styles {
+    <style>
+        .content-inner-div {
+            padding: 0 !important;
+        }
+    </style>
+}
+@section Scripts {
+    <script src="~/Content/js/powerbi.min.js"></script>
+    <script>
+        var RptKey = '@(isCourier ? "RC" : "")';
+
+        $(document).ready(function () {
+            var AccountIDs = [@Html.Raw(isCourier ? ViewBag.CourierId : ViewBag.CustomerId)];
+            var AcctIDs_LabCorp = [10002];
+            var DemoIDs = [10001];
+
+            for (var i = 0; i < AccountIDs.length; i++) {
+                if (AcctIDs_LabCorp.indexOf(AccountIDs[i]) > -1) {
+                    RptKey = 'R2';
+                    break;
+                }
+            }
+            for (var i = 0; i < AccountIDs.length; i++) {
+                if (DemoIDs.indexOf(AccountIDs[i]) > -1) {
+                    RptKey = 'R1';
+                    break;
+                }
+            }
+
+            // Load Reports
+            LoadPerformanceReport(AccountIDs);
+            //LoadTelematicsReport(AapAccountIDs);
+
+            // Overcome double scrolling issue
+            setInterval(() => {
+                $('#Performance').height($(window).width() * 2.19);
+            }, 500);
+        });
+        function LoadPerformanceReport(accIds) {
+            if (RptKey == 'R1') {
+                var embedToken = 'H4sIAAAAAAAEAB3Tx66DVgBF0X95UyLRW6QM6OALpoNhhmmmmHbpUf49L5mf0dLZf_842dWPWfHz58-XTlvwecoGnznWkcoK47jf7aDO8m6z2JFQdcdBhvBeSPZofnq2eXGmCukOsHuCKeTBrTVlK9utJXETDDEgQSJttD_bb6EajqxvXtlNd5dmjE3ovjGJ642UoKn2XWlXTZIOAIuw4sjqRHTL0QdNjp7xJei7WoIY9xMFcg2BS0msvqQ1y4NYPg8ppjdKNtZO1MoX6ITG8pHOtrGsbemFPsmMVigu__JEwlB3lXu5-4bDmwbFIx8PKnQcWxDMpEXo2LPu42nnHT57twuznh0rk0trxjO4Q2m-TtBL5HcxlTpq3vqDfg2YfReeq8FH5fHUDud2W9xHi8GtDPiCaGNsa6v4JsQjj06pfn8nSdtKuZiZwnk0hjR6CmrfXeBfr6GLz2jElg5taErRCD9x0kE3x8HWTrT1Vw-_KwsFz8TRzo98dQuMRE2zQpeqNKCHXQ7mD5WxSJETAQS8-5jiIBO4QPNOP-U6Qm0E1KWcV6q6opnrGGtONqfp2I6dlbizDpLGESRyzHl6OavM2GG8GL9_GO8rpOeJ6W2uI-Ei4rn_2dezD6nkMXYaG-iW3l0Yj6EdY9rFwNYaJI5SxarUd9fvFhnWwBaWVrwCwgQvu1DpjHbqubKd74mc4hcqaLqsBMGiJyWyZCdB16p946mzcjYJhi-eF4z9Le1DfJkN_XzpIr0X74th8gfQGWvbvOkhmftHaITaXXYvgKi0shYbQ2Az_fl-I4MfbEgyRuKsIqfjKDSMI-KTS2z_5lIKdr1C1JD8qPZb4txFyavd9o07Qk-PHKOyWVN6Xz0HhJmt0d-blW5MwVrFW9C0eJLjNEt-m1TL0njI_Pz540darmkdQXn95mRKKhMX9VOclg5Sccw_AbTwBmE-NAKGEO-fGDcrKjxhq6OtSpWENOmo7jutiwJ-85NzVSb2KsLN6x5QH4TLqL_R7ck5Isdm8YQwcasPoDz1NljcDELNpD9APhRuLriHWVrPXU-dBtQtm_gbYHM1rlcrl_cVk3T76_mlZoENZ4xISY_Qnlp5nowRLL_sv0HT49N8uuzZxjrGJRxesPTY0uI2Mqb2fsT8sFn6RKs8ursasju_ecDqaHxNCqyvmSK4zTEs0eQyXoxFPTcPE_OvZArAGriLih4OJK2Zn_n3od0BXCTeu0WCKIYzyQpuIUshYAuBSzBS-VCNgLE9HpH0lTHHX3_9x3xNn3Ixol_lwZhKheYBwpxHt2CiCGUWc_9f-U09ZOu2lL-zTzioucHAi-eufo3udczUzy40uTRh8hxOxGFEaSK5Ymk8laJSOZGh1iTaVXHhG3wrMHX3EUn7lnxFudzAepXVo4k4nzbvri8llOREowkNkctx0tf0w5FS-BGs9yoQtZiVSW7urx7KxyY3pU-eRkT2jE_hBmmXaCLYMiRAJN72PtcZmbLdSWXO0Nwjm78sagi1lUEfwllKlaTnlut-HobNk2YuftGMXkeBJg_2vr2epzNATQtfCwoGlk_Vg-06lCRXRBnnHCZs2naYQDI-yZdYUtEKXutePxngo5TH_d4RQGlg3W8MMq0cioOoTrc8YKFoTX5gzMgKm_JetQNNHiFsnlr9y_zPv445nERCBgAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLUVBU1QyLUItUFJJTUFSWS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldCIsImVtYmVkRmVhdHVyZXMiOnsibW9kZXJuRW1iZWQiOmZhbHNlfX0=';
+                var reportId = '78da21a4-3e8f-4e88-a772-fd43a1772677';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            else if (RptKey == 'R2') {
+                var embedToken = 'H4sIAAAAAAAEAB3Tx66DVgBF0X95UyLRW6QM6OALpoNhhmmmmHbpUf49L5mf0dLZf_842dWPWfHz58-XTlvwecoGnznWkcoK47jf7aDO8m6z2JFQdcdBhvBeSPZofnq2eXGmCukOsHuCKeTBrTVlK9utJXETDDEgQSJttD_bb6EajqxvXtlNd5dmjE3ovjGJ642UoKn2XWlXTZIOAIuw4sjqRHTL0QdNjp7xJei7WoIY9xMFcg2BS0msvqQ1y4NYPg8ppjdKNtZO1MoX6ITG8pHOtrGsbemFPsmMVigu__JEwlB3lXu5-4bDmwbFIx8PKnQcWxDMpEXo2LPu42nnHT57twuznh0rk0trxjO4Q2m-TtBL5HcxlTpq3vqDfg2YfReeq8FH5fHUDud2W9xHi8GtDPiCaGNsa6v4JsQjj06pfn8nSdtKuZiZwnk0hjR6CmrfXeBfr6GLz2jElg5taErRCD9x0kE3x8HWTrT1Vw-_KwsFz8TRzo98dQuMRE2zQpeqNKCHXQ7mD5WxSJETAQS8-5jiIBO4QPNOP-U6Qm0E1KWcV6q6opnrGGtONqfp2I6dlbizDpLGESRyzHl6OavM2GG8GL9_GO8rpOeJ6W2uI-Ei4rn_2dezD6nkMXYaG-iW3l0Yj6EdY9rFwNYaJI5SxarUd9fvFhnWwBaWVrwCwgQvu1DpjHbqubKd74mc4hcqaLqsBMGiJyWyZCdB16p946mzcjYJhi-eF4z9Le1DfJkN_XzpIr0X74th8gfQGWvbvOkhmftHaITaXXYvgKi0shYbQ2Az_fl-I4MfbEgyRuKsIqfjKDSMI-KTS2z_5lIKdr1C1JD8qPZb4txFyavd9o07Qk-PHKOyWVN6Xz0HhJmt0d-blW5MwVrFW9C0eJLjNEt-m1TL0njI_Pz540darmkdQXn95mRKKhMX9VOclg5Sccw_AbTwBmE-NAKGEO-fGDcrKjxhq6OtSpWENOmo7jutiwJ-85NzVSb2KsLN6x5QH4TLqL_R7ck5Isdm8YQwcasPoDz1NljcDELNpD9APhRuLriHWVrPXU-dBtQtm_gbYHM1rlcrl_cVk3T76_mlZoENZ4xISY_Qnlp5nowRLL_sv0HT49N8uuzZxjrGJRxesPTY0uI2Mqb2fsT8sFn6RKs8ursasju_ecDqaHxNCqyvmSK4zTEs0eQyXoxFPTcPE_OvZArAGriLih4OJK2Zn_n3od0BXCTeu0WCKIYzyQpuIUshYAuBSzBS-VCNgLE9HpH0lTHHX3_9x3xNn3Ixol_lwZhKheYBwpxHt2CiCGUWc_9f-U09ZOu2lL-zTzioucHAi-eufo3udczUzy40uTRh8hxOxGFEaSK5Ymk8laJSOZGh1iTaVXHhG3wrMHX3EUn7lnxFudzAepXVo4k4nzbvri8llOREowkNkctx0tf0w5FS-BGs9yoQtZiVSW7urx7KxyY3pU-eRkT2jE_hBmmXaCLYMiRAJN72PtcZmbLdSWXO0Nwjm78sagi1lUEfwllKlaTnlut-HobNk2YuftGMXkeBJg_2vr2epzNATQtfCwoGlk_Vg-06lCRXRBnnHCZs2naYQDI-yZdYUtEKXutePxngo5TH_d4RQGlg3W8MMq0cioOoTrc8YKFoTX5gzMgKm_JetQNNHiFsnlr9y_zPv445nERCBgAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLUVBU1QyLUItUFJJTUFSWS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldCIsImVtYmVkRmVhdHVyZXMiOnsibW9kZXJuRW1iZWQiOmZhbHNlfX0=';
+
+                var reportId = '78da21a4-3e8f-4e88-a772-fd43a1772677';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            else {
+                var embedToken = 'H4sIAAAAAAAEAB3Tx66DVgBF0X95UyLRW6QM6OALpoNhhmmmmHbpUf49L5mf0dLZf_842dWPWfHz58-XTlvwecoGnznWkcoK47jf7aDO8m6z2JFQdcdBhvBeSPZofnq2eXGmCukOsHuCKeTBrTVlK9utJXETDDEgQSJttD_bb6EajqxvXtlNd5dmjE3ovjGJ642UoKn2XWlXTZIOAIuw4sjqRHTL0QdNjp7xJei7WoIY9xMFcg2BS0msvqQ1y4NYPg8ppjdKNtZO1MoX6ITG8pHOtrGsbemFPsmMVigu__JEwlB3lXu5-4bDmwbFIx8PKnQcWxDMpEXo2LPu42nnHT57twuznh0rk0trxjO4Q2m-TtBL5HcxlTpq3vqDfg2YfReeq8FH5fHUDud2W9xHi8GtDPiCaGNsa6v4JsQjj06pfn8nSdtKuZiZwnk0hjR6CmrfXeBfr6GLz2jElg5taErRCD9x0kE3x8HWTrT1Vw-_KwsFz8TRzo98dQuMRE2zQpeqNKCHXQ7mD5WxSJETAQS8-5jiIBO4QPNOP-U6Qm0E1KWcV6q6opnrGGtONqfp2I6dlbizDpLGESRyzHl6OavM2GG8GL9_GO8rpOeJ6W2uI-Ei4rn_2dezD6nkMXYaG-iW3l0Yj6EdY9rFwNYaJI5SxarUd9fvFhnWwBaWVrwCwgQvu1DpjHbqubKd74mc4hcqaLqsBMGiJyWyZCdB16p946mzcjYJhi-eF4z9Le1DfJkN_XzpIr0X74th8gfQGWvbvOkhmftHaITaXXYvgKi0shYbQ2Az_fl-I4MfbEgyRuKsIqfjKDSMI-KTS2z_5lIKdr1C1JD8qPZb4txFyavd9o07Qk-PHKOyWVN6Xz0HhJmt0d-blW5MwVrFW9C0eJLjNEt-m1TL0njI_Pz540darmkdQXn95mRKKhMX9VOclg5Sccw_AbTwBmE-NAKGEO-fGDcrKjxhq6OtSpWENOmo7jutiwJ-85NzVSb2KsLN6x5QH4TLqL_R7ck5Isdm8YQwcasPoDz1NljcDELNpD9APhRuLriHWVrPXU-dBtQtm_gbYHM1rlcrl_cVk3T76_mlZoENZ4xISY_Qnlp5nowRLL_sv0HT49N8uuzZxjrGJRxesPTY0uI2Mqb2fsT8sFn6RKs8ursasju_ecDqaHxNCqyvmSK4zTEs0eQyXoxFPTcPE_OvZArAGriLih4OJK2Zn_n3od0BXCTeu0WCKIYzyQpuIUshYAuBSzBS-VCNgLE9HpH0lTHHX3_9x3xNn3Ixol_lwZhKheYBwpxHt2CiCGUWc_9f-U09ZOu2lL-zTzioucHAi-eufo3udczUzy40uTRh8hxOxGFEaSK5Ymk8laJSOZGh1iTaVXHhG3wrMHX3EUn7lnxFudzAepXVo4k4nzbvri8llOREowkNkctx0tf0w5FS-BGs9yoQtZiVSW7urx7KxyY3pU-eRkT2jE_hBmmXaCLYMiRAJN72PtcZmbLdSWXO0Nwjm78sagi1lUEfwllKlaTnlut-HobNk2YuftGMXkeBJg_2vr2epzNATQtfCwoGlk_Vg-06lCRXRBnnHCZs2naYQDI-yZdYUtEKXutePxngo5TH_d4RQGlg3W8MMq0cioOoTrc8YKFoTX5gzMgKm_JetQNNHiFsnlr9y_zPv445nERCBgAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLUVBU1QyLUItUFJJTUFSWS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldCIsImVtYmVkRmVhdHVyZXMiOnsibW9kZXJuRW1iZWQiOmZhbHNlfX0=';
+
+                var reportId = '78da21a4-3e8f-4e88-a772-fd43a1772677';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            var filters1 = {
+                $schema: 'http://powerbi.com/product/schema#basic',
+                target: {
+                    table: '@(isCourier ? "Courier" : "Customer")',
+                    column: '@(isCourier ? "ID" : "ID")'
+                },
+                operator: 'In',
+                values: accIds
+            };
+
+            var config = {
+                type: 'report',
+                accessToken: embedToken,
+                embedUrl: embedUrl,
+                id: reportId,
+                settings: {
+                    filterPaneEnabled: false,
+                    navContentPaneEnabled: false
+                }
+            };
+            var myreport = powerbi.embed($('#Performance')[0], config);
+            myreport.on('loaded', function (event) {
+                myreport.getFilters().then(function (filters) {
+                    filters.push(filters1);
+                    return myreport.setFilters(filters);
+                });
+            });
+        }
+
+    </script>
+}
+
+@*<div class="row">
+        <div class="col-lg-12">
+            <div class="form-group text-center">
+                <div class="btn-group" role="group">
+                    <a href="@Url.Action("Charts", "Analytics")" class="btn btn-default btn-lg active"><i class="mdi mdi-finance"></i> Analytics Dashboard</a>
+                    <a href="@Url.Action("AdHoc", "Analytics")" class="btn btn-default btn-lg"><i class="mdi mdi-collage"></i> Ad-Hoc Custom Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div class="full-width" id="Performance"></div>

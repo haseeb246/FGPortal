@@ -1,0 +1,358 @@
+﻿@model List<RouteInfo>
+
+@{
+    ViewBag.Title = "Map View";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+
+    string[] stateCodes = {
+"AL" + "_" + "33" + "_" + "-86" + "_" + "Alabama",
+"AK" + "_" + "66" + "_" + "-153" + "_" + "Alaska",
+"AZ" + "_" + "34.7" + "_" + "-112" + "_" + "Arizona",
+"AR" + "_" + "35.1" + "_" + "-92.3" + "_" + "Arkansas",
+"CA" + "_" + "37.2" + "_" + "-119.8" + "_" + "California",
+"CO" + "_" + "39.3" + "_" + "-105.5" + "_" + "Colorado",
+"CT" + "_" + "41.7" + "_" + "-72.7" + "_" + "Connecticut",
+"DE" + "_" + "38.9" + "_" + "-75.5" + "_" + "Delaware",
+"DC" + "_" + "38.9" + "_" + "-77" + "_" + "District of Columbia",
+"FL" + "_" + "28.4" + "_" + "-81.5" + "_" + "Florida",
+"GA" + "_" + "32.7" + "_" + "-83.2" + "_" + "Georgia",
+"HI" + "_" + "19.5" + "_" + "-155.5" + "_" + "Hawaii",
+"ID" + "_" + "44.7" + "_" + "-114.8" + "_" + "Idaho",
+"IL" + "_" + "40.4" + "_" + "-88.9" + "_" + "Illinois",
+"IN" + "_" + "40.3" + "_" + "-86.1" + "_" + "Indiana",
+"IA" + "_" + "42.4" + "_" + "-93.5" + "_" + "Iowa",
+"KS" + "_" + "39" + "_" + "-98.2" + "_" + "Kansas",
+"KY" + "_" + "37.9" + "_" + "-84.6" + "_" + "Kentucky",
+"LA" + "_" + "31.5" + "_" + "-92.5" + "_" + "Louisiana",
+"ME" + "_" + "45.7" + "_" + "-68.9" + "_" + "Maine",
+"MD" + "_" + "39.1" + "_" + "-76.6" + "_" + "Maryland",
+"MA" + "_" + "42.3" + "_" + "-72.2" + "_" + "Massachusetts",
+"MI" + "_" + "43.8" + "_" + "-84.9" + "_" + "Michigan",
+"MN" + "_" + "46.9" + "_" + "-94.4" + "_" + "Minnesota",
+"MS" + "_" + "33" + "_" + "-90" + "_" + "Mississippi",
+"MO" + "_" + "38.8" + "_" + "-92.5" + "_" + "Missouri",
+"MT" + "_" + "47.3" + "_" + "-109.6" + "_" + "Montana",
+"NE" + "_" + "41.9" + "_" + "-99.9" + "_" + "Nebraska",
+"NV" + "_" + "40.3" + "_" + "-116.6" + "_" + "Nevada",
+"NH" + "_" + "43.3" + "_" + "-71.8" + "_" + "New Hampshire",
+"NJ" + "_" + "40.6" + "_" + "-74.6" + "_" + "New Jersey",
+"NM" + "_" + "34.8" + "_" + "-106" + "_" + "New Mexico",
+"NY" + "_" + "40.7" + "_" + "-73.8" + "_" + "New York",
+"NC" + "_" + "35.6" + "_" + "-78.5" + "_" + "North Carolina",
+"ND" + "_" + "47.8" + "_" + "-100.5" + "_" + "North Dakota",
+"OH" + "_" + "40.6" + "_" + "-82.6" + "_" + "Ohio",
+"OK" + "_" + "35.8" + "_" + "-96.8" + "_" + "Oklahoma",
+"OR" + "_" + "44.4" + "_" + "-119.8" + "_" + "Oregon",
+"PA" + "_" + "41.1" + "_" + "-77.4" + "_" + "Pennsylvania",
+"RI" + "_" + "41.7" + "_" + "-71.5" + "_" + "Rhode Island",
+"SC" + "_" + "34.2" + "_" + "-80.6" + "_" + "South Carolina",
+"SD" + "_" + "45" + "_" + "-100" + "_" + "South Dakota",
+"TN" + "_" + "36" + "_" + "-86.2" + "_" + "Tennessee",
+"TX" + "_" + "32.5" + "_" + "-99.4" + "_" + "Texas",
+"UT" + "_" + "40" + "_" + "-114.4" + "_" + "Utah",
+"VT" + "_" + "44.3" + "_" + "-72.5" + "_" + "Vermont",
+"VA" + "_" + "37.9" + "_" + "-78" + "_" + "Virginia",
+"WA" + "_" + "48" + "_" + "-120" + "_" + "Washington",
+"WV" + "_" + "38.6" + "_" + "-80.9" + "_" + "West Virginia",
+"WI" + "_" + "45.1" + "_" + "-90.1" + "_" + "Wisconsin",
+"WY" + "_" + "43.5" + "_" + "-107.5" + "_" + "Wyoming",
+};
+}
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy',
+                endDate: '+4d',
+                autoclose: true,
+                todayHighlight: true,
+            });
+
+            init();
+        });
+        function init() {
+            var markerObjs = [];
+
+            @foreach(var each in Model.SelectMany(x => x.Stops).Select(x => x.State.Trim().ToUpper()).Distinct().ToList())
+            {
+                if (stateCodes.SingleOrDefault(x => x.Split('_')[0] == each) != null)
+                {
+                    @:markerObjs.push(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new
+                    {
+                        lat = stateCodes.SingleOrDefault(x => x.Split('_')[0] == each).Split('_')[1],
+                        lng = stateCodes.SingleOrDefault(x => x.Split('_')[0] == each).Split('_')[2],
+                        id = "",
+                        url = "",
+                        classes = "state-marker",
+                        visible = false,
+                        icon = "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|FFFFFF|000000",
+                        infoWindowContent = $"<strong>{stateCodes.SingleOrDefault(x => x.Split('_')[0] == each).Split('_')[3]}</strong>",
+                        state = each,
+                    })));
+                }
+            }
+            @foreach(var each in Model)
+            {
+                bool hasException = each.TopException != null;
+                string newCode = hasException ? each.TopException.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.TopException.Code : null;
+                @:markerObjs.push(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    lat = each.Stops.FirstOrDefault().Latitude,
+                    lng = each.Stops.FirstOrDefault().Longitude,
+                    id = each.ID.ToString(),
+                    url = Url.Action("Stops", "Route", new { rID = each.ID, pDate = each.PostDate.ToString("MM/dd/yyyy") }),
+                    classes = $"route,state-{each.Stops.FirstOrDefault().State.Trim().ToUpper()},entity-*,entity-{each.CourierName},entity-{each.CustomerName},{(hasException ? $"exception,{newCode}" : "")}",
+                    visible = false,
+                    icon = $"https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|{(hasException ? each.TopException.Color.Replace("#", "") : "FFFFFF")}|000000",
+                    infoWindowContent = $"Route ID: <strong>{each.ExternalID}</strong><br />Status: <strong>{(hasException ? (newCode == ExceptionTypeCode.Exception_REAL ? "Courier Exception" : each.TopException.CustomDescription ?? each.TopException.Description) : "OK")}</strong>",
+                })));
+            }
+
+            courierConnect.maps.setMarkers(markerObjs);
+
+            $('#filter-display').val('@ViewBag.Filter_Display');
+
+            weatherOverlayToggle();
+
+            applyFilter();
+        };
+        function filterRoutesByDate(element) {
+            courierConnect.helpers.setCookie('filter-dr-postdate', element.value);
+            $('#content-div').hide();
+            $('#loading-screen').show();
+            window.location.replace('@Url.Action("Map", "Route")?pDate=' + encodeURIComponent(element.value));
+        };
+        function updateDisplay(selectedValue, setCookie, filter) {
+            if (setCookie) {
+                courierConnect.helpers.setCookie('filter-dr-display', selectedValue);
+            }
+            if (filter) {
+                $('#filter-display').val(selectedValue);
+                applyFilter();
+            }
+        };
+        function groupByFilter(selectedValue) {
+            if (selectedValue === 'none') {
+                courierConnect.maps.hideMarkersByClass('state-marker');
+                applyFilter();
+            } else if (selectedValue === 'state') {
+                courierConnect.maps.hideAllMarkers();
+                courierConnect.maps.showMarkersByClass('state-marker');
+            }
+        };
+        function applyFilter() {
+            var selectedDisplay = $('#filter-display').val();
+            var selectedEntity = $('#filter-entity').val();
+            var selectedGrouping = $('#filter-groupBy').val();
+
+            if (selectedGrouping === 'none') {
+                courierConnect.maps.clearViewableStates();
+                courierConnect.maps.hideAllMarkers();
+                courierConnect.maps.showMarkersByClasses([selectedDisplay, 'entity-' + selectedEntity]);
+            } else if (selectedGrouping === 'state') {
+                courierConnect.maps.showMarkersByClassesForStateFilter([selectedDisplay, 'entity-' + selectedEntity]);
+            }
+
+            window.courierConnect.maps.zoomToFit();
+        };
+        function weatherOverlayToggle() {
+            var filterWeather = $('#filter-weather').is(':checked');
+            if (filterWeather) {
+                courierConnect.aeris.applyWeatherOverlay(courierConnect.maps.getMapObject());
+            } else {
+                courierConnect.aeris.removeWeatherOverlay(courierConnect.maps.getMapObject());
+            }
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group text-center">
+            <div class="btn-group" role="group" aria-label="...">
+                <a href="@Url.Action("List", "Route")" class="btn btn-default btn-lg"><i class="fas fa-road"></i> Routes View</a>
+                @*<a href="@Url.Action("DisplayOrders", "App")" class="btn btn-default btn-lg"><i class="fas fa-tasks"></i> On-Demand Orders View</a>*@
+                <a href="@Url.Action("Map", "Route")" class="btn btn-default btn-lg active"><i class="fas fa-map"></i> Map View</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="loading-screen" class="full-width text-center" hidden>
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+    </div>
+    <div id="content-div">
+        @if (Model.Count > 0)
+        {
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @foreach (var eachCode in 
+                        Model
+                        .Where(x => x.HasException)
+                        .OrderByDescending(x => x.TopException.Severity)
+                        .Select(x => x.TopException.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : x.TopException.Code)
+                        .Distinct())
+                    {
+                        var routes = Model.Where(x => x.HasException && x.TopException.Code.Contains(eachCode)).ToList();
+                        if (routes.Count > 0)
+                        {
+                            <div class="panel panel-default">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@routes.Count</span>
+                                        <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-exception-@eachCode" aria-expanded="false" aria-controls="collapse-exception-@eachCode"><strong>@(eachCode == ExceptionTypeCode.Exception_Late ? "Late Exception" : eachCode == ExceptionTypeCode.Exception_REAL ? "Courier Specific Exception" : routes.First().TopException.Description)</strong></a>
+                                    </li>
+                                </ul>
+                                <div id="collapse-exception-@eachCode" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-exception-@eachCode">
+                                    <div class="panel-body">
+                                        <div class="pre-scrollable max-height-155">
+                                            <ul class="list-group m-b-0">
+                                                @foreach (var route in routes.OrderBy(x => x.ExternalID))
+                                                {
+                                                    <li class="list-group-item" style="background-color: @route.TopException.Color;">
+                                                        <table class="full-width">
+                                                            <tr>
+                                                                <td class="va-m" width="80">
+                                                                    <a href="@Url.Action("Stops", "Route", new { rID = route.ID, pDate = route.PostDate.ToString("MM/dd/yyyy") })">
+                                                                        <strong>@route.ExternalID</strong>
+                                                                    </a>
+                                                                </td>
+                                                                <td class="va-m text-right" width="20">
+                                                                    <a href="javascript:courierConnect.maps.centerMarkerOnMap('@route.ID');">
+                                                                        <strong><i class="fas fa-map-marker-alt fa-2x"></i></strong>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+        <div class="col-lg-@(Model.Count > 0 ? "9" : "12")">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="form-group m-b-0">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="va-m width-125"><label>Post Date</label></th>
+                                    <th class="va-m width-25"></th>
+                                    <th class="va-m width-150"><label>Show</label></th>
+                                    <th class="va-m width-25"></th>
+                                    <th class="va-m width-125"><label>@Html.Raw(ViewBag.CustomerId > 0 ? "Courier" : "Customer")</label></th>
+                                    <th class="va-m width-25"></th>
+                                    <th class="va-m width-150"><label>Group Pushpins By</label></th>
+                                    @if (ViewBag.ShowWeatherMap)
+                                    {
+                                        <th class="va-m width-25"></th>
+                                        <th class="va-m width-125"></th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="va-m width-125">
+                                        <input type="text" class="form-control datepicker text-center" value="@ViewBag.Filter_PostDate" placeholder="MM/dd/yyyy" autocomplete="off" onchange="filterRoutesByDate(this);" />
+                                    </td>
+                                    <td class="va-m width-25"></td>
+                                    <td class="va-m width-150">
+                                        <select id="filter-display" class="form-control text-center" onchange="updateDisplay(this.value, true, true);">
+                                            <option value="route">All Routes</option>
+                                            <option value="exception">All Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missed_Stop">Missed Stop Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Late">Late Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Out_Of_Sequence">Out Of Sequence Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missing_POD">Missing POD Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_REAL">Courier Specific Exceptions</option>
+                                        </select>
+                                    </td>
+                                    <td class="va-m width-25"></td>
+                                    <td class="va-m width-125">
+                                        <select id="filter-entity" class="form-control" onchange="applyFilter();">
+                                            <option value="*">All @Html.Raw(ViewBag.CustomerId > 0 ? "Couriers" : "Customers")</option>
+                                            @foreach (var each in ViewBag.CustomerId > 0 ? Model.Select(x => x.CourierName).OrderBy(x => x).Distinct() : Model.Select(x => x.CustomerName).OrderBy(x => x).Distinct())
+                                            {
+                                                <option value="@each">@each</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="va-m width-25"></td>
+                                    <td class="va-m width-150">
+                                        <select id="filter-groupBy" class="form-control text-center" onchange="groupByFilter(this.value);">
+                                            <option value="none">No Grouping</option>
+                                            <option value="state">State</option>
+                                        </select>
+                                    </td>
+                                    @if (ViewBag.ShowWeatherMap)
+                                    {
+                                        <td class="va-m width-25"></td>
+                                        <td class="va-m width-125">
+                                            <div class="checkbox m-t-b-0">
+                                                <label><input type="checkbox" id="filter-weather" onchange="weatherOverlayToggle();" checked /> <strong>Weather Radar</strong></label>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    @if (Model.Count > 0)
+                    {
+                        <div class="form-group">
+                            <div id="map" class="full-width" style="height: 550px;"></div>
+                        </div>
+                    }
+                    else if (ViewBag.Error != null && ViewBag.Error)
+                    {
+                        <div class="form-group">
+                            <h3 class="text-danger text-center">Something went wrong while loading data. <a href="javascript:void(0)" class="text-primary" onclick="location.reload();">Click Here</a> to try again.</h3>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <h3 class="text-muted text-center">No routes found for @ViewBag.Filter_PostDate</h3>
+                        </div>
+                    }
+                    <div class="form-group m-b-0 text-center">
+                        <div class="full-width m-t-b-5 p-5 text-right">
+                            <a href="@Url.Action("Preferences", "App")"><strong><i class="fa fa-cogs"></i> Click here to change on-time thresholds</strong></a>
+                        </div>
+                        @foreach (ExceptionType each in ViewHelper.SystemExceptions())
+                        {
+                            string code = each.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.Code;
+                            <div class="full-width m-t-b-5 p-5" style="background-color: @each.BackgroundColorHex">
+                                <a href="javascript:void(0)" class="text-black" style="text-decoration: none;" onclick="updateDisplay('@code', false, true);">
+                                    <strong>
+                                        @ViewHelper.LegendDescription(each, ViewBag.UserId)
+                                    </strong>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,261 @@
+﻿@model UpdateStopModel
+
+@{
+    ViewBag.Title = $"Update Stop #{Model.StopID}";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+
+    bool allowDelete = Model.ArrivalDateTime.HasValue || Model.CompletionDateTime.HasValue || !string.IsNullOrWhiteSpace(Model.PODText) || !string.IsNullOrWhiteSpace(Model.PODSignatureEncoded);
+
+    string stopsUrl = Url.Action("Stops", "Route", new { rID = Model.RouteID, pDate = Model.PostDate.ToString("MM/dd/yyyy") });
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+    <script type="text/javascript">
+        var exceptionID = 0;
+
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy',
+                endDate: '+0d',
+                autoclose: true,
+                todayHighlight: true,
+            });
+
+            $('.timepicker').timepicker({
+                template: false,
+                showInputs: false,
+                minuteStep: 1
+            });
+
+            $('#ajax-message-container').hide();
+
+            updateDescription();
+        });
+        function updateDescription() {
+            var element = document.getElementById('eType');
+            var value = element.options[element.selectedIndex].getAttribute('data-desc');
+
+            $('.eColumn').hide();
+
+            if (value === 'None') {
+                $('#ExceptionCode').val('');
+                $('#ExceptionDescription').val('');
+            }
+            else if (value === 'NewCode') {
+                $('#ExceptionCode').val('');
+                $('#ExceptionDescription').val('');
+                $('.eColumn').show();
+            }
+            else if (value !== '') {
+                $('#ExceptionCode').val(element.value);
+                $('#ExceptionDescription').val(element.options[element.selectedIndex].getAttribute('data-desc'));
+            }
+        };
+        function showClearEntryConfirmation() {
+            $('#delete-modal').modal('show');
+        };
+        function clearEntry() {
+            $.post('@Url.Action("ClearEntry", "Stop")', 'stopId=@Model.StopID', function (data) {
+                if (data.success) {
+                    window.location.replace('@Url.Action("Update", "Stop")?stopId=@Model.StopID&updated=true');
+                } else {
+                    $('#ajax-message-container').show();
+                    $('#ajax-message-label').val('Couldn\'t clear entry. Please try again.');
+                }
+            });
+        };
+        function updateStop() {
+            $('#message-success-container').hide();
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("Update", "Stop")',
+                data: new FormData($('#updatestop-form')[0]),
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if (data.success) {
+                        window.location.replace('@Html.Raw(stopsUrl)');
+                    } else {
+                        $('#ajax-message-container').show();
+                        $('#ajax-message-label').html(data.message);
+                    }
+                }
+            });
+        };
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        @if (Context.Request.Query["updated"].Any() && bool.Parse(Context.Request.Query["updated"]))
+        {
+            <div class="form-group" id="message-success-container">
+                <div class="alert alert-success text-center">
+                    <strong class="m-b-0 text-success">
+                        Successfully saved your changes
+                    </strong>
+                </div>
+            </div>
+        }
+        <div class="form-group" id="ajax-message-container">
+            <div class="alert alert-danger text-center">
+                <strong class="m-b-0 text-danger" id="ajax-message-label">
+                    <!--AJAX-->
+                </strong>
+            </div>
+        </div>
+        <div class="form-group m-b-0">
+            <form action="javascript:void(0)" method="post" enctype="multipart/form-data" id="updatestop-form">
+                @Html.HiddenFor(x => x.StopID)
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="full-width">
+                                    <tr>
+                                        <td class="va-m" width="75%">
+                                            <h4><strong>@ViewBag.Title</strong></h4>
+                                        </td>
+                                        <td class="va-m text-center" width="10%">
+                                            <a href="@Url.Action("Stops", "Route", new { rID = Model.RouteID, pDate = Model.PostDate.ToString("MM/dd/yyyy") })">Cancel</a>
+                                        </td>
+                                        <td class="va-m text-right" width="15%">
+                                            <a href="javascript:void(0)" class="btn btn-primary full-width" onclick="updateStop();">
+                                                <i class="fa fa-save"></i>
+                                                &nbsp;
+                                                <strong>Submit</strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.ArrivalDate, "Arrival Date")
+                                                @Html.TextBoxFor(x => x.ArrivalDate, new { @class = "form-control datepicker text-center", @Value = (Model.ArrivalDateTime.HasValue ? Model.ArrivalDateTime.Value.ToString("MM/dd/yyyy") : Model.PostDate.ToString("MM/dd/yyyy")), @max = DateTime.Today.ToString("MM/dd/yyyy") })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.ArrivalTime, "Arrival Time")
+                                                @Html.TextBoxFor(x => x.ArrivalTime, new { @class = "form-control timepicker text-center", @Value = (Model.ArrivalDateTime.HasValue ? Model.ArrivalDateTime.Value.ToString("hh:mm tt") : "") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.CompletionDate, "Completion Date")
+                                                @Html.TextBoxFor(x => x.CompletionDate, new { @class = "form-control datepicker text-center", @Value = (Model.CompletionDateTime.HasValue ? Model.CompletionDateTime.Value.ToString("MM/dd/yyyy") : Model.PostDate.ToString("MM/dd/yyyy")), @max = DateTime.Today.ToString("MM/dd/yyyy") })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.CompletionTime, "Completion Time")
+                                                @Html.TextBoxFor(x => x.CompletionTime, new { @class = "form-control timepicker text-center", @Value = (Model.CompletionDateTime.HasValue ? Model.CompletionDateTime.Value.ToString("hh:mm tt") : "") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.PODText, "POD Name")
+                                    @Html.TextBoxFor(x => x.PODText, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>New Signature File</label>
+                                    @Html.TextBox("newSignatureFile", null, new { @type = "file", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Add Exception To This Stop</label>
+                                    <select class="form-control" id="eType" onchange="updateDescription();">
+                                        <option value="None" data-desc="None" selected>None</option>
+                                        <option value="NewCode" data-desc="NewCode">+ Add New Exception</option>
+                                        <option disabled>========================</option>
+                                        @foreach (var each in Model.CourierExceptionTypeDiscription.OrderBy(x => x.Key))
+                                        {
+                                            <option value="@each.Key" data-desc="@(each.Value?.Trim())">@each.Key ---- @(each.Value?.Trim())</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 eColumn">
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.ExceptionCode, "Exception Code")
+                                    @Html.TextBoxFor(x => x.ExceptionCode, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-lg-6 eColumn">
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.ExceptionDescription, "Exception Description")
+                                    @Html.TextBoxFor(x => x.ExceptionDescription, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @if (allowDelete)
+    {
+        <div class="col-lg-12 text-right">
+            <div class="form-group m-b-0 text-right">
+                <a href="#/" class="btn btn-sm btn-danger" onclick="showClearEntryConfirmation();">
+                    <i class="fa fa-trash"></i>
+                    &nbsp;
+                    Delete This Entry
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="delete-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="m-b-0">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                You are about to delete the current information we have on record for this route stop.
+                <br />
+                Do you want to proceed?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="javascript:Void(0)" class="btn btn-danger" onclick="clearEntry();"><strong>Delete</strong></a>
+            </div>
+        </div>
+    </div>
+</div>

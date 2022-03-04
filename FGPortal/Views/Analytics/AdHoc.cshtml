@@ -1,0 +1,341 @@
+﻿@model AdHocModel
+
+@{
+    ViewBag.Title = "AdHoc";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/bootstrap-multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Content/plugins/bootstrap-multiselect/site.css" rel="stylesheet" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+    <script src="~/Content/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <script src="~/Content/js/powerbi.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy',
+                endDate: '+0d',
+                autoclose: true,
+                todayHighlight: true,
+            });
+            $('.multiselect').multiselect({
+                buttonWidth: '100%'
+            });
+        });
+        function dataTableInit() {
+            $('.data-table').DataTable({
+                aLengthMenu: [[15, 25, 50, 100, 1000], [15, 25, 50, 100, 1000]],
+                iDisplayLength: 15,
+                'dom': "<'row'<'col-lg-12'l>>" + "<'row'<'col-lg-12't>>" + "<'row'<'col-lg-3'B><'col-lg-9'p>>",
+                'ordering': false
+            });
+        }
+        function showRouteStopDetails(sid) {
+            $('#modal').modal('show');
+            $.get('@Url.Action("StopDetails", "Route")?sid=' + sid, (data) => {
+                $('#routeStopDetailsContent').html(data);
+            });
+        }
+        function generateAdHocData() {
+            $('#content-div').hide();
+            $('#loading-screen').show();
+            $.post('@Url.Action("GenerateAdHocData", "Analytics")', $('#adHocForm').serialize() + '&DataColumns=' + $('#dataColumns').val(), function (data) {
+                $('#adHocDataContainer').html(data);
+                $('#content-div').show();
+                $('#loading-screen').hide();
+                dataTableInit();
+            });
+        }
+        function switchPanel(whichToShow) {
+            if (whichToShow === 'new') {
+                $('#savedPanel').hide();
+                $('#newPanel').show();
+            }
+            else if (whichToShow === 'saved') {
+                $('#newPanel').hide();
+                $('#savedPanel').show();
+            }
+        }
+    </script>
+}
+
+@*<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group text-center">
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("Charts", "Analytics")" class="btn btn-default btn-lg"><i class="mdi mdi-finance"></i> Analytics Dashboard</a>
+                <a href="@Url.Action("AdHoc", "Analytics")" class="btn btn-default btn-lg active"><i class="mdi mdi-collage"></i> Ad-Hoc Custom Reports</a>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div class="row m-t-20">
+    <div class="col-lg-12">
+        <div id="loading-screen" class="full-width text-center" hidden>
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+        <div id="content-div">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2" id="newPanel">
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <table class="full-width">
+                                    <tr>
+                                        <td class="va-m">
+                                            <h4>
+                                                <strong>
+                                                    Generate New Report
+                                                </strong>
+                                            </h4>
+                                        </td>
+                                        <td class="va-m text-right">
+                                            <a href="#/" style="text-decoration: none;" onclick="switchPanel('saved');">
+                                                <i class="fa fa-random"></i>
+                                                <strong>
+                                                    Manage Saved Reports
+                                                </strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="panel-body">
+                                <form class="row" action="#/" method="post" id="adHocForm">
+                                    <div class="col-lg-3 form-group">
+                                        <label>Display Columns</label>
+                                        <select class="multiselect form-control" id="dataColumns" multiple="multiple">
+                                            <option value="courier">Courier</option>
+                                            <option value="customer">Customer</option>
+                                            <option value="location">Location</option>
+                                            <option value="metroarea">Metro Area</option>
+                                            <option value="podtext">POD Text</option>
+                                            <option value="postdate">Post Date</option>
+                                            <option value="references">References</option>
+                                            <option value="remarks">Remarks</option>
+                                            <option value="routeid">Route</option>
+                                            <option value="sequence">Sequence</option>
+                                            <option value="status">Status</option>
+                                            <option value="stopid">Stop ID</option>
+                                            <option value="stoptype">Stop Type</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>From Date</label>
+                                        <input type="text" name="fromDate" class="form-control datepicker text-center" placeholder="MM/DD/YYYY" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>To Date</label>
+                                        <input type="text" name="toDate" class="form-control datepicker text-center" placeholder="MM/DD/YYYY" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Courier</label>
+                                        <select class="form-control">
+                                            <option value="aaa">All (Default)</option>
+                                            <option value="xxx">Option 1</option>
+                                            <option value="yyy">Option 2</option>
+                                            <option value="zzz">Option 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Customer</label>
+                                        <select class="form-control">
+                                            <option value="aaa">All (Default)</option>
+                                            <option value="xxx">Option 1</option>
+                                            <option value="yyy">Option 2</option>
+                                            <option value="zzz">Option 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Location Name</label>
+                                        <input type="text" name="locationName" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Address</label>
+                                        <input type="text" name="address" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Metro Area</label>
+                                        <input type="text" name="mArea" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>POD Text</label>
+                                        <input type="text" name="pText" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>References</label>
+                                        <input type="text" name="routeName" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Remarks</label>
+                                        <input type="text" name="routeName" class="form-control text-center" placeholder="" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-3 form-group">
+                                        <label>Route Name</label>
+                                        <input type="text" name="routeName" class="form-control text-center" placeholder="Name of the route" autocomplete="off" />
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <hr />
+                                    </div>
+                                    <div class="col-lg-3 col-lg-offset-9 form-group m-b-0 text-center">
+                                        <a href="#/" class="btn btn-primary full-width" onclick="generateAdHocData();">
+                                            <i class="fa fa-file"></i>
+                                            &nbsp;
+                                            <strong>
+                                                Generate
+                                            </strong>
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-lg-offset-2" id="savedPanel" hidden>
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <table class="full-width">
+                                    <tr>
+                                        <td class="va-m">
+                                            <h4>
+                                                <strong>
+                                                    Manage Saved Reports
+                                                </strong>
+                                            </h4>
+                                        </td>
+                                        <td class="va-m text-right">
+                                            <a href="#/" style="text-decoration: none;" onclick="switchPanel('new');">
+                                                <i class="fa fa-random"></i>
+                                                <strong>Generate New Report</strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table-striped table-hover full-width m-b-0">
+                                    <tr>
+                                        <td class="va-m p-10">
+                                            <strong>Saved Report #1</strong>
+                                        </td>
+                                        <td class="va-m p-10 text-right">
+                                            <a href="#/" class="text-danger" style="text-decoration: none;">
+                                                <i class="fa fa-trash"></i>
+                                                <span>
+                                                    Delete
+                                                </span>
+                                            </a>
+                                            &nbsp;
+                                            |
+                                            &nbsp;
+                                            <a href="#/" class="text-primary" style="text-decoration: none;">
+                                                <i class="fa fa-file"></i>
+                                                <strong>
+                                                    Generate
+                                                </strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m p-10">
+                                            <strong>Saved Report #2</strong>
+                                        </td>
+                                        <td class="va-m p-10 text-right">
+                                            <a href="#/" class="text-danger" style="text-decoration: none;">
+                                                <i class="fa fa-trash"></i>
+                                                <span>
+                                                    Delete
+                                                </span>
+                                            </a>
+                                            &nbsp;
+                                            |
+                                            &nbsp;
+                                            <a href="#/" class="text-primary" style="text-decoration: none;">
+                                                <i class="fa fa-file"></i>
+                                                <strong>
+                                                    Generate
+                                                </strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m p-10">
+                                            <strong>Saved Report #3</strong>
+                                        </td>
+                                        <td class="va-m p-10 text-right">
+                                            <a href="#/" class="text-danger" style="text-decoration: none;">
+                                                <i class="fa fa-trash"></i>
+                                                <span>
+                                                    Delete
+                                                </span>
+                                            </a>
+                                            &nbsp;
+                                            |
+                                            &nbsp;
+                                            <a href="#/" class="text-primary" style="text-decoration: none;">
+                                                <i class="fa fa-file"></i>
+                                                <strong>
+                                                    Generate
+                                                </strong>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <hr />
+                </div>
+                <div class="col-lg-12" id="adHocDataContainer">
+                    <h4 class="m-t-b-0 text-muted text-center">
+                        Please use the Ad-Hoc filter above to easily configure reports.
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-width-70pct" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Route Stop Details</h4>
+            </div>
+            <div class="modal-body">
+                <div id="loading-div" class="full-width text-center" hidden>
+                    <div class="sk-folding-cube">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
+                </div>
+                <div id="content-div">
+                    <div class="form-group text-right">
+                        <button class="btn btn-primary" onclick="printDiv('routeStopDetailsContent');">Print / Download</button>
+                    </div>
+                    <div id="routeStopDetailsContent" class="form-group m-b-0">
+                        <!-- AJAX Data -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

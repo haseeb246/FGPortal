@@ -1,0 +1,541 @@
+﻿@model PreferencesModel
+
+@{
+    ViewBag.Title = "Preferences";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('#@(UserPreferenceKey.Default_Landing_Page)').val('@(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.Default_Landing_Page) ? Model.UserPreferences.First(x => x.Key == UserPreferenceKey.Default_Landing_Page).Value : DefaultValues.Default_Landing_Page_Routes)');
+            $('#@(UserPreferenceKey.TimeZoneInfo)').val('@(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.TimeZoneInfo) ? Model.UserPreferences.First(x => x.Key == UserPreferenceKey.TimeZoneInfo).Value : DefaultValues.Default_TimeZone)');
+
+            updateValues('ett');
+            updateValues('rpc');
+        });
+        function updateValues(type) {
+            if (type === 'ett') {
+                var ett_late_1_val = Number($('#@UserPreferenceKey.Exception_Time_Threshold_First_Late_Exception').val());
+                var ett_late_2_val = Number($('#@UserPreferenceKey.Exception_Time_Threshold_Second_Late_Exception').val());
+
+                if (ett_late_1_val < 0) {
+                    ett_late_1_val = 0;
+                }
+                if (ett_late_2_val < 0) {
+                    ett_late_2_val = 0;
+                }
+                if (ett_late_2_val < (ett_late_1_val)) {
+                    ett_late_2_val = (ett_late_1_val + 1);
+                }
+
+                $('#@UserPreferenceKey.Exception_Time_Threshold_First_Late_Exception').val(ett_late_1_val);
+                $('#@UserPreferenceKey.Exception_Time_Threshold_Second_Late_Exception').val(ett_late_2_val);
+                $('#@UserPreferenceKey.Exception_Time_Threshold_Second_Late_Exception-0').val(Number(ett_late_1_val));
+                $('#ett-late-3-val').val(Number(ett_late_2_val));
+            } else if (type === 'rpc') {
+                var rpc_neu_val = Number($('#@UserPreferenceKey.OnTimeTrending_Neutral').val());
+                var rpc_pos_val = Number($('#@UserPreferenceKey.OnTimeTrending_Positive').val());
+                var rpc_neg_val = Number($('#@UserPreferenceKey.OnTimeTrending_Negative').val());
+
+                if (rpc_neu_val < 0) {
+                    rpc_neu_val = 0;
+                }
+                if (rpc_pos_val < 0) {
+                    rpc_pos_val = 0;
+                }
+                if (rpc_neg_val < 0) {
+                    rpc_neg_val = 0;
+                }
+                if (rpc_pos_val < (rpc_neu_val)) {
+                    rpc_pos_val = (rpc_neu_val);
+                }
+                if (rpc_neg_val < (rpc_neu_val)) {
+                    rpc_neg_val = (rpc_neu_val);
+                }
+
+                $("#@(UserPreferenceKey.OnTimeTrending_Neutral)").val(rpc_neu_val);
+                $('#@UserPreferenceKey.OnTimeTrending_Positive').val(rpc_pos_val);
+                $('#@UserPreferenceKey.OnTimeTrending_Negative').val(rpc_neg_val);
+
+                $('#@UserPreferenceKey.OnTimeTrending_Positive-0').val(rpc_neu_val);
+                $('#@UserPreferenceKey.OnTimeTrending_Positive-1').val(rpc_pos_val);
+                $('#@UserPreferenceKey.OnTimeTrending_Negative-0').val(rpc_neu_val);
+                $('#@UserPreferenceKey.OnTimeTrending_Negative-1').val(rpc_neg_val);
+            }
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="form-group">
+            @if (Context.Request.Query["updated"] == "true")
+            {
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Changes Saved!</strong> Your preferences have been successfully updated.
+                </div>
+            }
+            <form action="@Url.Action("Save", "Preferences")" method="post">
+                <div class="form-group">
+                    <table class="full-width">
+                        <tr>
+                            <td class="va-m" width="80%">
+                                <h3>@ViewBag.Title</h3>
+                            </td>
+                            <td class="va-m" width="20%">
+                                <button type="submit" class="btn btn-primary full-width"><strong>Save Changes</strong></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4>Portal Settings</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <table class="full-width m-b-0">
+                                        <tr>
+                                            <td class="va-m" width="30%">
+                                                <strong>
+                                                    Default Landing Page
+                                                </strong>
+                                            </td>
+                                            <td class="va-m" width="70%">
+                                                <select id="@UserPreferenceKey.Default_Landing_Page" name="@UserPreferenceKey.Default_Landing_Page" class="form-control full-width">
+                                                    <option value="@DefaultValues.Default_Landing_Page_Routes">Routes View</option>
+                                                    <option value="@DefaultValues.Default_Landing_Page_OnDemand">On-Demand Orders View</option>
+                                                    <option value="@DefaultValues.Default_Landing_Page_Map">Map View</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="form-group m-b-0">
+                                    <table class="full-width m-b-0">
+                                        <tr>
+                                            <td class="va-m" width="30%">
+                                                <strong>
+                                                    My Time zone
+                                                </strong>
+                                            </td>
+                                            <td class="va-m" width="70%">
+                                                <select id="@UserPreferenceKey.TimeZoneInfo" name="@UserPreferenceKey.TimeZoneInfo" class="form-control full-width">
+                                                    <option value="device">Use the time zone from my device (Default)</option>
+                                                    @foreach (var each in TimeZoneInfo.GetSystemTimeZones())
+                                                    {
+                                                        <option value="@each.Id">@each</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4>Exception Time Thresholds</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-bordered full-width m-b-0">
+                                    <tr>
+                                        <td class="va-m" width="30%" style="background-color: #FFF899;">
+                                            <strong>
+                                                First Late Exception
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        Less than
+                                                    </td>
+                                                    <td class="p-5">
+                                                        @if (true)
+                                                        {
+                                                            string identifier = UserPreferenceKey.Exception_Time_Threshold_First_Late_Exception;
+                                                            @Html.Raw($"<input type='number' id='{identifier}' name='{identifier}' min='0' value='{(Model.UserPreferences.Any(x => x.Key == identifier) ? Model.UserPreferences.First(x => x.Key == identifier).Value : DefaultValues.Exception_Time_Threshold_First_Late_Exception.ToString())}' class='form-control text-center' style='max-width: 80px;' autocomplete='off' onchange='updateValues(\"ett\");' />");
+                                                        }
+                                                    </td>
+                                                    <td class="p-5">
+                                                        Minute(s)
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m" width="30%" style="background-color: #FFE08C;">
+                                            <strong>
+                                                Second Late Exception
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        Between
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="@UserPreferenceKey.Exception_Time_Threshold_Second_Late_Exception-0" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        And
+                                                    </td>
+                                                    <td class="p-5">
+                                                        @if (true)
+                                                        {
+                                                            string identifier = UserPreferenceKey.Exception_Time_Threshold_Second_Late_Exception;
+                                                            @Html.Raw($"<input type='number' id='{identifier}' name='{identifier}' min='0' value='{(Model.UserPreferences.Any(x => x.Key == identifier) ? Model.UserPreferences.First(x => x.Key == identifier).Value : DefaultValues.Exception_Time_Threshold_Second_Late_Exception.ToString())}' class='form-control text-center' style='max-width: 80px;' autocomplete='off' onchange='updateValues(\"ett\");' />");
+                                                        }
+                                                    </td>
+                                                    <td class="p-5">
+                                                        Minute(s)
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m" width="30%" style="background-color: #FCC2C2;">
+                                            <strong>
+                                                Third Late Exception
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        More than
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="ett-late-3-val" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        Minute(s)
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4>
+                                            On-time Trending
+                                            <i class="mdi mdi-help-circle" data-toggle="tooltip" data-placement="right" title="On-time Trending: Last 7 Days’ Performance vs. Rolling 60 Day Average"></i>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-bordered full-width m-b-0">
+                                    <tr>
+                                        <td class="va-m" width="30%">
+                                            <strong>
+                                                Neutral Performance <span class="text-info">(±%)</span>
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 25px;">
+                                                        <i class="fa fa-minus text-info"></i>
+                                                    </td>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        Between
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" min="0" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        And
+                                                    </td>
+                                                    <td class="p-5">
+                                                        @if (true)
+                                                        {
+                                                            string identifier = UserPreferenceKey.OnTimeTrending_Neutral;
+                                                            @Html.Raw($"<input type='number' id='{identifier}' name='{identifier}' min='0' value='{(Model.UserPreferences.Any(x => x.Key == identifier) ? Model.UserPreferences.First(x => x.Key == identifier).Value : DefaultValues.OnTimeTrending_Neutral.ToString())}' class='form-control text-center' style='max-width: 80px;' autocomplete='off' onchange='updateValues(\"rpc\");' />");
+                                                        }
+                                                    </td>
+                                                    <td class="p-5">
+                                                        %
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m" width="30%">
+                                            <strong>
+                                                Positive Performance <span class="text-success">(+%)</span>
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 25px;">
+                                                        <i class="fa fa-angle-up text-success"></i>
+                                                    </td>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        Between
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="@UserPreferenceKey.OnTimeTrending_Positive-0" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        And
+                                                    </td>
+                                                    <td class="p-5">
+                                                        @if (true)
+                                                        {
+                                                            string identifier = UserPreferenceKey.OnTimeTrending_Positive;
+                                                            @Html.Raw($"<input type='number' id='{identifier}' name='{identifier}' min='0' value='{(Model.UserPreferences.Any(x => x.Key == identifier) ? Model.UserPreferences.First(x => x.Key == identifier).Value : DefaultValues.OnTimeTrending_Positive.ToString())}' class='form-control text-center' style='max-width: 80px;' autocomplete='off' onchange='updateValues(\"rpc\");' />");
+                                                        }
+                                                    </td>
+                                                    <td class="p-5">
+                                                        %
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 25px;">
+                                                        <i class="fa fa-angle-double-up text-success"></i>
+                                                    </td>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        More than
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="@UserPreferenceKey.OnTimeTrending_Positive-1" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        %
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m" width="30%">
+                                            <strong>
+                                                Negative Performance <span class="text-danger">(-%)</span>
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 25px;">
+                                                        <i class="fa fa-angle-down text-danger"></i>
+                                                    </td>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        Between
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="@UserPreferenceKey.OnTimeTrending_Negative-0" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        And
+                                                    </td>
+                                                    <td class="p-5">
+                                                        @if (true)
+                                                        {
+                                                            string identifier = UserPreferenceKey.OnTimeTrending_Negative;
+                                                            @Html.Raw($"<input type='number' id='{identifier}' name='{identifier}' min='0' value='{(Model.UserPreferences.Any(x => x.Key == identifier) ? Model.UserPreferences.First(x => x.Key == identifier).Value : DefaultValues.OnTimeTrending_Negative.ToString())}' class='form-control text-center' style='max-width: 80px;' autocomplete='off' onchange='updateValues(\"rpc\");' />");
+                                                        }
+                                                    </td>
+                                                    <td class="p-5">
+                                                        %
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-5" style="min-width: 25px;">
+                                                        <i class="fa fa-angle-double-down text-danger"></i>
+                                                    </td>
+                                                    <td class="p-5" style="min-width: 80px;">
+                                                        More than
+                                                    </td>
+                                                    <td class="p-5">
+                                                        <input type="number" id="@UserPreferenceKey.OnTimeTrending_Negative-1" value="0" class="form-control text-center" style="max-width: 80px;" autocomplete="off" readonly />
+                                                    </td>
+                                                    <td class="p-5">
+                                                        %
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4>Email Notification Settings</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-bordered full-width m-b-0">
+                                    <tr>
+                                        <td class="va-m" width="30%">
+                                            <strong>
+                                                Notification Events
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <div class="form-group p-5" style="background-color: #FFF899;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="@UserPreferenceKey.EmailNotifications_Events" value="@ExceptionTypeCode.Exception_Late" @(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Events && x.Value.Contains(ExceptionTypeCode.Exception_Late)) ? "checked" : "") /> <strong>Late Exceptions</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group p-5" style="background-color: #C8B6FC;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="@UserPreferenceKey.EmailNotifications_Events" value="@ExceptionTypeCode.Exception_Missed_Stop" @(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Events && x.Value.Contains(ExceptionTypeCode.Exception_Missed_Stop)) ? "checked" : "") /> <strong>Missed Stop Exceptions</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group p-5" style="background-color: #ECE5FF;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="@UserPreferenceKey.EmailNotifications_Events" value="@ExceptionTypeCode.Exception_Out_Of_Sequence" @(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Events && x.Value.Contains(ExceptionTypeCode.Exception_Out_Of_Sequence)) ? "checked" : "") /> <strong>Out Of Sequence Exceptions</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group p-5" style="background-color: #AFEEEE;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="@UserPreferenceKey.EmailNotifications_Events" value="@ExceptionTypeCode.Exception_Missing_POD" @(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Events && x.Value.Contains(ExceptionTypeCode.Exception_Missing_POD)) ? "checked" : "") /> <strong>Missing POD Exceptions</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group p-5 m-b-0" style="background-color: #B0CBFC;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="@UserPreferenceKey.EmailNotifications_Events" value="@ExceptionTypeCode.Exception_REAL" @(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Events && x.Value.Contains(ExceptionTypeCode.Exception_REAL)) ? "checked" : "") /> <strong>Courier Specific Exceptions</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="va-m" width="30%">
+                                            <strong>
+                                                Email Addresses
+                                            </strong>
+                                        </td>
+                                        <td class="va-m" width="70%">
+                                            <textarea class="form-control full-width nr-resize" rows="2" placeholder="Enter email addresses separated by a comma" name="@UserPreferenceKey.EmailNotifications_Emails">@(Model.UserPreferences.Any(x => x.Key == UserPreferenceKey.EmailNotifications_Emails) ? Model.UserPreferences.First(x => x.Key == UserPreferenceKey.EmailNotifications_Emails).Value : (ViewBag.UserEmail != null && !string.IsNullOrWhiteSpace(ViewBag.UserEmail) ? ViewBag.UserEmail : ""))</textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <table class="full-width">
+                        <tr>
+                            <td class="va-m" width="80%"></td>
+                            <td class="va-m" width="20%">
+                                <button type="submit" class="btn btn-primary full-width"><strong>Save Changes</strong></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="form-group">
+            <hr />
+        </div>
+        <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h4>My Account Information</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered full-width m-b-0">
+                        <tr>
+                            <td class="va-m" width="30%">
+                                <strong>
+                                    Username
+                                </strong>
+                            </td>
+                            <td class="va-m" width="70%">
+                                <span class="text-primary">@Model.Username</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="va-m" width="30%">
+                                <strong>
+                                    Access Limitation
+                                </strong>
+                            </td>
+                            <td class="va-m" width="70%">
+                                @if (Model.UserRestrictions.Any())
+                                {
+                                    if (Model.UserRestrictions.Any(x => x.RestrictionType.ToLower() == "state"))
+                                    {
+                                        var states = Model.UserRestrictions.Where(x => x.RestrictionType.ToLower() == "state").Select(x => x.RestrictionValue.ToUpper().Trim()).Distinct();
+
+                                        if (states.Any())
+                                        {
+                                            <label class="m-b-0 text-danger">States</label>
+                                            <br />
+                                            <span>@(string.Join(", ", states))</span>
+                                        }
+                                    }
+                                    else if (Model.UserRestrictions.Any(x => x.RestrictionType == "dbo.RouteStop.Reference1"))
+                                    {
+                                        var refs = Model.UserRestrictions.Where(x => x.RestrictionType == "dbo.RouteStop.Reference1").Select(x => x.RestrictionValue.Trim()).Distinct();
+                                        if (refs.Any())
+                                        {
+                                            <label class="m-b-0 text-danger">Route References</label>
+                                            <br />
+                                            <span>@(string.Join(", ", refs))</span>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-success">No restrictions</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "Analytics Dashboard";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+
+    bool isCourier = ViewBag.CourierId > 0;
+
+    
+}
+
+
+
+@section Styles {
+    <style>
+        .content-inner-div {
+            padding: 0 !important;
+        }
+    </style>
+}
+@section Scripts {
+    <script src="~/Content/js/powerbi.min.js"></script>
+    <script>
+        var RptKey = '@(isCourier ? "RC" : "")';
+
+        $(document).ready(function () {
+            var AccountIDs = [@Html.Raw(isCourier ? ViewBag.CourierId : ViewBag.CustomerId)];
+            var AcctIDs_LabCorp = [10002];
+            var DemoIDs = [10001];
+
+            for (var i = 0; i < AccountIDs.length; i++) {
+                if (AcctIDs_LabCorp.indexOf(AccountIDs[i]) > -1) {
+                    RptKey = 'R2';
+                    break;
+                }
+            }
+            for (var i = 0; i < AccountIDs.length; i++) {
+                if (DemoIDs.indexOf(AccountIDs[i]) > -1) {
+                    RptKey = 'R1';
+                    break;
+                }
+            }
+
+            // Load Reports
+            LoadPerformanceReport(AccountIDs);
+            //LoadTelematicsReport(AapAccountIDs);
+
+            // Overcome double scrolling issue
+            setInterval(() => {
+                $('#Performance').height($(window).width() * 2.19);
+            }, 500);
+        });
+        function LoadPerformanceReport(accIds) {
+            if (RptKey == 'R1') {
+               // var embedToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1yNS1BVWliZkJpaTdOZDFqQmViYXhib1hXMCIsImtpZCI6Ik1yNS1BVWliZkJpaTdOZDFqQmViYXhib1hXMCJ9.eyJhdWQiOiJodHRwczovL2FuYWx5c2lzLndpbmRvd3MubmV0L3Bvd2VyYmkvYXBpIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvOTZhZjE1NGYtMjNmYi00NTQxLTkzMTctMWQyODE5YTJiYTFkLyIsImlhdCI6MTY0Mzk2MDM3OSwibmJmIjoxNjQzOTYwMzc5LCJleHAiOjE2NDM5NjUyNTYsImFjY3QiOjAsImFjciI6IjEiLCJhaW8iOiJBVFFBeS84VEFBQUFzaGpmRWV5UmFWMHMrN05iYzBuZUpNLzFDQUtwSG9zYnhmQzVJRG9RQjc3em9yeFJGV0Jtdm1pRFYxNFAwcVh1IiwiYW1yIjpbInB3ZCJdLCJhcHBpZCI6Ijg3MWMwMTBmLTVlNjEtNGZiMS04M2FjLTk4NjEwYTdlOTExMCIsImFwcGlkYWNyIjoiMiIsImZhbWlseV9uYW1lIjoiTWFsaW4iLCJnaXZlbl9uYW1lIjoiQ2hyaXMiLCJpcGFkZHIiOiIyMjMuMjMzLjY2LjE0MiIsIm5hbWUiOiJDaHJpcyBNYWxpbiIsIm9pZCI6ImRmZWMyYzMwLWI3NTAtNGIzYy05MDc0LTc5YjQ2ZGM0MGRjMiIsInB1aWQiOiIxMDAzMjAwMUFCMjBERkUyIiwicmgiOiIwLkFUWUFUeFd2bHZzalFVV1RGeDBvR2FLNkhRa0FBQUFBQUFBQXdBQUFBQUFBQUFBMkFMSS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJHS21Ja1NsZU04QTZ3cFBYN0QyNHNDc3FLMlRQUnlRbFlkNk9MX3RHREVFIiwidGlkIjoiOTZhZjE1NGYtMjNmYi00NTQxLTkzMTctMWQyODE5YTJiYTFkIiwidW5pcXVlX25hbWUiOiJjQGNlYnRhcy5jb20iLCJ1cG4iOiJjQGNlYnRhcy5jb20iLCJ1dGkiOiJsbWJTR0NOV0tVMjVCaDdmVEFhWUFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyIyOTIzMmNkZi05MzIzLTQyZmQtYWRlMi0xZDA5N2FmM2U0ZGUiLCJhOWVhODk5Ni0xMjJmLTRjNzQtOTUyMC04ZWRjZDE5MjgyNmMiLCI2OTA5MTI0Ni0yMGU4LTRhNTYtYWE0ZC0wNjYwNzViMmE3YTgiLCJmMjhhMWY1MC1mNmU3LTQ1NzEtODE4Yi02YTEyZjJhZjZiNmMiLCJmMDIzZmQ4MS1hNjM3LTRiNTYtOTVmZC03OTFhYzAyMjYwMzMiLCJmZTkzMGJlNy01ZTYyLTQ3ZGItOTFhZi05OGMzYTQ5YTM4YjEiLCI3Mjk4MjdlMy05YzE0LTQ5ZjctYmIxYi05NjA4ZjE1NmJiYjgiLCI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJmMmVmOTkyYy0zYWZiLTQ2YjktYjdjZi1hMTI2ZWU3NGM0NTEiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXX0.KOw1S7Ozhtz4Q2cwgat8nlsXafIK1IEmkNAqtDZ9lJbMSHvUH3ErIbqSwZ2Il7EGD7DsaUsK7kfEsVAa1EtLIJxKxjWzVtvtnFtNUkeC5XyKvEgN3_HcjMqpISFWGPyXxMLz8Y29-FbubXnwZHGt-auvK3otIk-kVK7FWf27kEU3r6nP_dHTAGCUsEXt1I_e_jqk2bW5CE0WqYxk6BpFRDhtKetNya1RLHH6RIJuzHeWX5C6vw454DMB_FAl6b--sAUbsCWPPy2B5TPi7Rh-3TM4Zydy7NQ6dDxSzBMVAAJ3RBS7Q4aUOrhDESLDbdxawnykmQ80DU6Lmg4MyTHvpg'
+                var reportId = '79dcbed9-0deb-4f4d-96a0-a8e7414d2e1f';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            else if (RptKey == 'R2') {
+
+
+                var reportId = '79dcbed9-0deb-4f4d-96a0-a8e7414d2e1f';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            else {
+
+                var reportId = '79dcbed9-0deb-4f4d-96a0-a8e7414d2e1f';
+                var groupID = 'edc33df0-af8f-420e-a28b-c67ea8febfe6'
+                //var embedUrl = 'https://app.powerbi.com/appTokenReportEmbed?reportId=' + reportId;
+                var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId;
+                //var embedUrl = 'https://app.powerbi.com/reportEmbed?reportId=' + reportId + '&groupID=' + groupID;
+            }
+            var filters1 = {
+                $schema: 'http://powerbi.com/product/schema#basic',
+                target: {
+                    table: '@(isCourier ? "Courier" : "Customer")',
+                    column: '@(isCourier ? "ID" : "ID")'
+                },
+                operator: 'In',
+                values: accIds
+            };
+            var embedToken = 'H4sIAAAAAAAEAB2UxQ7saBaD3-VuM1IYaqReJBVm_AO7UAUrzK1596nuva0jfcf233_s9O7HtPjz3z-rHHwzhtqDunaWwfwgHRDhUvWTxpIMWdVBS9ey6dCtazBaRVUl2oce3o-8KlVmT8x36uccbwQfOXCnVlmEwQNjQy9BafpQluKyejy7qSOUjnctiaGbTFm5z1HRHi94oo_ccffbjrXOXvgNEZlubTvX-zjDvhJVAan49vz4hk3iWR6bBdpg2NKgZrm_DSFdPetxYSFMmHalMz6ULe7AVsEz_NA9Di6LcozwzITGlpTw4gPn4k5Vg_cUSWQsaUnc6xeR0SdkO3PFCEZgcSkR8-vaia_AXtkuxa3uHjV1vqMCLXkrizk61e7DtuPKrTAlnI7bSW0GFXJewTrPXRV6jY_D-_o47axn9AZMAZZHDMd8VT1qu8UmY2ha8PP6Tapuv6iJUiTBGlB8OO06O8XHsFdXlNgHSNMoLnrhEA8CwI_kBbbwKV-j4Nu0NIPaEFGk0GRr0iRCQES0UvL0aJK2PWkzfxDwpi76vBB2JfFoga7A84I3jPpfWJsZORGgafxuCwy1yCGPTMt431gD2P4Irnoq7uE5bv2z8fYUAP55RfTOyG647WrxYIr9eFqlJ8U7Eikdq6S-qGHVGJz7RAsvCurAj-PPnu-WIHXY7aGkiwmxVM_JLrMAc5NS7L-843iJ8oBNl_i6qfIPxfFe8VIcLxOMfUnMI4TkJ3NnPKll-udTuLBZZwEobrzXCMFUrPSgXiDxcSMwyf7qe8ZOLSj6zDiecCXeu-molddemZNUaVuymo5ZzGP6BerefhUoRFYnv_lTLKV7smeOqg1wOi5KwoSWAr_JZ53Dk1cqEjZdsEaWNR06qMS4vKZ2z8jNw9_UzLr6n__8eS_3tP2O3b86icnoGpRZXdJstJJ1rAMTO_Q0DOBducmiH79anYf3So9ACUlqHS0WRnGVJVk0qtA1DOFi5xk2YBrWdBgrR36J-SU7yCix4mw7vF87dfe8rbXBTbNQpGXJNhw5SQkjuTMFw6zGPBftvk679x1l7GZngQIrT11warLQVipPIH4NVztHjtmXmMWsWkw_pmuzt5lBVI8Q8JKEvMp-CNKP8ugq8Pn9EpFHouaOLiqxDUEKx8nhoAq7kGofcc8Y8T6kn93WEQt-TW22yPeyrIwjAIRctu9Cc5E0mF3Vv2WhR01dDCjWVAwtnaf1VSEWucyPwcFBPIlIO6_dLbKBHIRCJqXh7_3nX3_9g_me6nJRwI_ynrtRfm03i28k4ssWcg7T4fyr8ppqSLd9KX8ygKmKzwOekbvRlvucM-F5K5skVylWzbUt7xm9VhWBqQ7yKkRKTCHQLTZwBmFOSlhXMHkdNFgep0b_AkIVe-Av1ZIqEZPniQtc-m13TojF4D6F5rBoscqdPOhrty7QLw4hmqNq71rlBhVA-0ZYiAYv5p4QsrireGEQfI4VV0gvm6AYQIrQ6ZuvQDimRFk5K5GSNn3moaHPjsHjmoIlnYO2fE75i0Xp0BQO_Ha2u7mGBJ-47mPTHMNTgv767d2UfWJckDcc105h6OG4FV_fXuOe2cW0qIVQV5O075on15N77_imoMovaDqzTy4e7SbzWu0ElTQoyM6XViNqZfTi0yuMFPaH-X__BzLJ_ehCBgAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLUVBU1QyLUItUFJJTUFSWS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldCIsImVtYmVkRmVhdHVyZXMiOnsibW9kZXJuRW1iZWQiOmZhbHNlfX0=';
+
+            var config = {
+                type: 'report',
+                accessToken: embedToken,
+                embedUrl: embedUrl,
+                id: reportId,
+                settings: {
+                    filterPaneEnabled: false,
+                    navContentPaneEnabled: false
+                }
+            };
+            const models = window['powerbi-client'].models;
+              config = {
+                type: 'report',
+                tokenType: models.TokenType.Embed,
+                  accessToken: embedToken,
+                embedUrl: embedUrl,
+                  id: reportId,
+                permissions: models.Permissions.All,
+                settings: {
+                    // Enable this setting to remove gray shoulders from embedded report
+                    // background: models.BackgroundType.Transparent,
+                    filterPaneEnabled: true,
+                    navContentPaneEnabled: true
+                }
+            };
+
+            var myreport = powerbi.embed($('#Performance')[0], config);
+            myreport.on('loaded', function (event) {
+                myreport.getFilters().then(function (filters) {
+                    filters.push(filters1);
+                    return myreport.setFilters(filters);
+                });
+            });
+        }
+
+    </script>
+}
+
+@*<div class="row">
+        <div class="col-lg-12">
+            <div class="form-group text-center">
+                <div class="btn-group" role="group">
+                    <a href="@Url.Action("Charts", "Analytics")" class="btn btn-default btn-lg active"><i class="mdi mdi-finance"></i> Analytics Dashboard</a>
+                    <a href="@Url.Action("AdHoc", "Analytics")" class="btn btn-default btn-lg"><i class="mdi mdi-collage"></i> Ad-Hoc Custom Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div class="full-width" id="Performance"></div>

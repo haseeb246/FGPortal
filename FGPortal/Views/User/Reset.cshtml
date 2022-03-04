@@ -1,0 +1,50 @@
+@model PasswordResetModel
+
+@{
+    ViewBag.Title = "Reset Your Password";
+    Layout = "~/Views/_PublicLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-4 col-lg-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading text-center text-white bg-logo-blue">
+                <h4><strong>@ViewBag.Title</strong></h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @if (Model.EmailSent)
+                    {
+                        <div class="col-lg-12">
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                We'll send a password reset link to your email address if it exists in our system.
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-lg-12">
+                            @Html.Partial("_ModalStateErrors")
+                            <form action="@Url.Action("SendResetEmail", "User")" method="post">
+                                @Html.HiddenFor(x => x.Page, new { @Value = "Reset" })
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.Username, "Username")
+                                    @Html.TextBoxFor(x => x.Username, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group m-b-0 text-right">
+                                    <button type="submit" class="btn btn-primary"><strong>Reset My Password</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="@Url.Action("Signin", "User")">Click here to sign in to your account</a>
+            </div>
+        </div>
+    </div>
+</div>

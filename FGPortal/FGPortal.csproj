@@ -1,0 +1,113 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Analytics\**" />
+    <Compile Remove="Views\App\**" />
+    <Compile Remove="Views\Error\**" />
+    <Compile Remove="Views\Logs\**" />
+    <Compile Remove="Views\Preferences\**" />
+    <Compile Remove="Views\Report\**" />
+    <Compile Remove="Views\Route\**" />
+    <Compile Remove="Views\Stop\**" />
+    <Compile Remove="Views\Support\**" />
+    <Compile Remove="Views\Track\**" />
+    <Content Remove="Views\Analytics\**" />
+    <Content Remove="Views\App\**" />
+    <Content Remove="Views\Error\**" />
+    <Content Remove="Views\Logs\**" />
+    <Content Remove="Views\Preferences\**" />
+    <Content Remove="Views\Report\**" />
+    <Content Remove="Views\Route\**" />
+    <Content Remove="Views\Stop\**" />
+    <Content Remove="Views\Support\**" />
+    <Content Remove="Views\Track\**" />
+    <EmbeddedResource Remove="Views\Analytics\**" />
+    <EmbeddedResource Remove="Views\App\**" />
+    <EmbeddedResource Remove="Views\Error\**" />
+    <EmbeddedResource Remove="Views\Logs\**" />
+    <EmbeddedResource Remove="Views\Preferences\**" />
+    <EmbeddedResource Remove="Views\Report\**" />
+    <EmbeddedResource Remove="Views\Route\**" />
+    <EmbeddedResource Remove="Views\Stop\**" />
+    <EmbeddedResource Remove="Views\Support\**" />
+    <EmbeddedResource Remove="Views\Track\**" />
+    <None Remove="Views\Analytics\**" />
+    <None Remove="Views\App\**" />
+    <None Remove="Views\Error\**" />
+    <None Remove="Views\Logs\**" />
+    <None Remove="Views\Preferences\**" />
+    <None Remove="Views\Report\**" />
+    <None Remove="Views\Route\**" />
+    <None Remove="Views\Stop\**" />
+    <None Remove="Views\Support\**" />
+    <None Remove="Views\Track\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\RouteController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\Home\Contact.cshtml" />
+    <Content Remove="Views\User\ChangePassword.cshtml" />
+    <Content Remove="Views\User\Reset.cshtml" />
+    <Content Remove="Views\User\ResetPassword.cshtml" />
+    <Content Remove="Views\User\Signincopy.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\App\Index.cshtml" />
+    <None Include="Views\Home\About.cshtml" />
+	  <None Include="Views\Home\Contact.cshtml" />
+	  <None Include="Views\Shared\Error.cshtml" />
+	  <None Include="Views\Shared\_ActionResponse.cshtml" />
+	  <None Include="Views\Shared\_AuthFooterLinks.cshtml" />
+	  <None Include="Views\Shared\_DisplayRoutesDisplayFilter.cshtml" />
+	  <None Include="Views\Shared\_GoogleAnalytics.cshtml" />
+	  <None Include="Views\Shared\_Layout.cshtml" />
+	  <None Include="Views\Shared\_ModalStateErrors.cshtml" />
+	  <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+	  <None Include="Views\User\Signin.cshtml" />
+    <None Include="wwwroot\Content\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\Content\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\Content\css\bootstrap.css.map" />
+    <None Include="wwwroot\Content\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\Content\docs\CourierConnect_MapView.docx" />
+    <None Include="wwwroot\Content\docs\CourierConnect_Preferences.docx" />
+    <None Include="wwwroot\Content\docs\CourierConnect_RoutesView.docx" />
+    <None Include="wwwroot\Content\docs\CourierConnect_RunReports.docx" />
+    <None Include="wwwroot\Content\docs\CourierConnect_TLogs.docx" />
+    <None Include="wwwroot\Content\docs\CourierConnect_TrackShipments.docx" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\Content\js\bootstrap.js" />
+    <None Include="wwwroot\Content\js\bootstrap.min.js" />
+    <None Include="wwwroot\Content\js\npm.js" />
+    <None Include="wwwroot\Content\js\powerbi.min.js" />
+    <None Include="wwwroot\Content\js\powerbi.min.js.bak" />
+    <None Include="wwwroot\Content\plugins\bootstrap-multiselect\bootstrap-multiselect.js" />
+    <None Include="wwwroot\Content\reports\ia-sr.xlsx" />
+    <None Include="wwwroot\Content\reports\msa-de.xlsx" />
+    <None Include="wwwroot\Content\reports\otr-od.csv" />
+    <None Include="wwwroot\Content\reports\otr-sr.xlsx" />
+    <None Include="wwwroot\Content\reports\wbdr-sr.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FGPortal.Models\FGPortal.Models.csproj" />
+    <ProjectReference Include="..\FGPortal.Services\FGPortal.Services.csproj" />
+  </ItemGroup>
+
+</Project>

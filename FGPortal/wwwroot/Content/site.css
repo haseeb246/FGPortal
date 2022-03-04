@@ -1,0 +1,311 @@
+body {
+    padding-top: 0 !important;
+    background-color: #3c3b3b;
+}
+
+.container {
+    width: 100%;
+}
+
+.navbar {
+    border-radius: 0 !important;
+}
+
+.navbar a {
+    font-size: 17px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.va-m {
+    vertical-align: middle !important;
+}
+
+.ws-nw {
+    white-space: nowrap;
+}
+
+.b-b-0 {
+    border-bottom: 0 !important;
+}
+
+/* Custom Margins & Paddings */
+.m-0 {
+    margin: 0;
+}
+
+.m-l-0 {
+    margin-left: 0 !important;
+}
+
+.m-t-0 {
+    margin-top: 0;
+}
+
+.m-t-7 {
+    margin-top: 7px;
+}
+
+.m-t-10 {
+    margin-top: 10px;
+}
+
+.m-t-20 {
+    margin-top: 20px;
+}
+
+.m-t-40 {
+    margin-top: 40px;
+}
+
+.m-b-0 {
+    margin-bottom: 0;
+}
+
+.m-t-b-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.m-t-b-0 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.p-0 {
+    padding: 0;
+}
+
+.p-5 {
+    padding: 5px;
+}
+
+.p-10 {
+    padding: 10px;
+}
+
+.p-15 {
+    padding: 15px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+/* Custom Width and Height */
+.width-25 {
+    width: 25px !important;
+}
+
+.width-50 {
+    width: 50px !important;
+}
+
+.width-80 {
+    width: 80px !important;
+}
+
+.width-100 {
+    width: 100px !important;
+}
+
+.width-125 {
+    width: 125px !important;
+}
+
+.width-150 {
+    width: 150px !important;
+}
+
+.width-200 {
+    width: 200px;
+}
+
+.width-250 {
+    width: 250px;
+}
+
+.width-300 {
+    width: 300px;
+}
+
+.width-350 {
+    width: 350px;
+}
+
+.max-height-155 {
+    max-height: 155px;
+}
+
+.max-height-200 {
+    max-height: 200px;
+}
+
+/* Custom Backgrounds */
+.bg-white {
+    background-color: white;
+}
+
+.bg-dimgrey {
+    background-color: dimgrey;
+}
+
+.bg-logo-blue {
+    background-color: #212121 !important;
+}
+
+/* Custom font colors */
+.text-white {
+    color: white !important;
+}
+
+.text-black {
+    color: black !important;
+}
+
+/* FOOTER */
+.footer {
+    background-color: #212121;
+}
+
+.footer-links {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.footer-links a {
+    display: inline-block;
+    line-height: 1.8;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Custom Modal Sizes */
+.modal-width-70pct {
+    width: 70% !important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: lightgray;
+}
+
+.pre-scrollable {
+    overflow-y: auto;
+}
+
+.no-resize {
+    resize: none;
+}
+
+/* Custom Laoder */
+.sk-folding-cube {
+    margin: 50px auto;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    -webkit-transform: rotateZ(45deg);
+    transform: rotateZ(45deg);
+}
+
+.sk-folding-cube .sk-cube {
+    float: left;
+    width: 50%;
+    height: 50%;
+    position: relative;
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.sk-folding-cube .sk-cube:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #212121;
+    -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
+    animation: sk-foldCubeAngle 2.4s infinite linear both;
+    -webkit-transform-origin: 100% 100%;
+    -ms-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+}
+
+.sk-folding-cube .sk-cube2 {
+    -webkit-transform: scale(1.1) rotateZ(90deg);
+    transform: scale(1.1) rotateZ(90deg);
+}
+
+.sk-folding-cube .sk-cube3 {
+    -webkit-transform: scale(1.1) rotateZ(180deg);
+    transform: scale(1.1) rotateZ(180deg);
+}
+
+.sk-folding-cube .sk-cube4 {
+    -webkit-transform: scale(1.1) rotateZ(270deg);
+    transform: scale(1.1) rotateZ(270deg);
+}
+
+.sk-folding-cube .sk-cube2:before {
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
+.sk-folding-cube .sk-cube3:before {
+    -webkit-animation-delay: 0.6s;
+    animation-delay: 0.6s;
+}
+
+.sk-folding-cube .sk-cube4:before {
+    -webkit-animation-delay: 0.9s;
+    animation-delay: 0.9s;
+}
+
+@-webkit-keyframes sk-foldCubeAngle {
+    0%, 10% {
+        -webkit-transform: perspective(140px) rotateX(-180deg);
+        transform: perspective(140px) rotateX(-180deg);
+        opacity: 0;
+    }
+
+    25%, 75% {
+        -webkit-transform: perspective(140px) rotateX(0deg);
+        transform: perspective(140px) rotateX(0deg);
+        opacity: 1;
+    }
+
+    90%, 100% {
+        -webkit-transform: perspective(140px) rotateY(180deg);
+        transform: perspective(140px) rotateY(180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes sk-foldCubeAngle {
+    0%, 10% {
+        -webkit-transform: perspective(140px) rotateX(-180deg);
+        transform: perspective(140px) rotateX(-180deg);
+        opacity: 0;
+    }
+
+    25%, 75% {
+        -webkit-transform: perspective(140px) rotateX(0deg);
+        transform: perspective(140px) rotateX(0deg);
+        opacity: 1;
+    }
+
+    90%, 100% {
+        -webkit-transform: perspective(140px) rotateY(180deg);
+        transform: perspective(140px) rotateY(180deg);
+        opacity: 0;
+    }
+}
+/* End Custom Laoder */
+
+.tooltip {
+    position: fixed;
+}

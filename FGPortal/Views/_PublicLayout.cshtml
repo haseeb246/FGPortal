@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @*@Html.Partial("_GoogleAnalytics")*@
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="~/Content/img/favicon.ico" />
+    <title>CEBTAS - @ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/site.css?random=@Guid.NewGuid()" rel="stylesheet" />
+    @RenderSection("Styles", false)
+</head>
+<body>
+    <div class="container">
+        <!-- Header Banner -->
+        <div class="row m-t-b-0">
+            <div class="col-lg-12">
+                <a href="@Url.Action("Index", "App")"><img src="~/Content/img/header.jpg" alt="Header Banner" class="img-responsive full-width" /></a>
+            </div>
+        </div>
+        <!-- Blank Bar -->
+        <div class="full-width" style="min-height: 20px; background-color: #3C3B3B;">
+
+        </div>
+        <!-- Content -->
+        <div class="row m-t-b-0">
+            <div class="col-lg-12">
+                <div class="bg-white p-20">
+                    <!-- IE section -->
+                    @if (ViewBag.IsIEBrowser != null && ViewBag.IsIEBrowser)
+                    {
+                        <div class="row m-t-b-0">
+                            <div class="col-lg-12">
+                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Outdated or Unsupported Browser Detected</strong>
+                                    <br />
+                                    <strong>CEBTAS</strong> uses modern technologies and much functionality will not work properly in older IE browsers. We recommend that you use either Edge, <a href="https://www.google.com/chrome/" target="_blank"><strong>Chrome</strong></a> or <a href="https://www.mozilla.org/en-US/" target="_blank"><strong>Firefox</strong></a>.
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*@Html.Partial("_ActionResponse")*@
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="footer p-15">
+            <div class="footer-links text-center">
+                &copy; @DateTime.Now.Year CEBTAS Solutions, a division of LC MALIN LLC.
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvTFqUZEGOgGO6QNg6EzWSk1At1SGrQZQ"></script>
+    <script src="~/Content/courier-connect.js?random=@Guid.NewGuid()"></script>
+    @RenderSection("Scripts", false)
+</body>
+</html>

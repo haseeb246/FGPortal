@@ -1,0 +1,44 @@
+@{
+    string response = !string.IsNullOrWhiteSpace(Context.Request.Query["responseCode"]) ? Context.Request.Query["responseCode"] : "";
+    string type = !string.IsNullOrWhiteSpace(Context.Request.Query["responseType"]) ? Context.Request.Query["responseType"] : "info";
+}
+
+@if (response != null)
+{
+    <div class="alert alert-@type text-center">
+        <strong>
+            @if (response == "ok")
+            {
+                @Html.Raw("Your request has been successfully submitted.")
+            }
+            else if (response == "Signin-InvalidCred")
+            {
+                @Html.Raw("Incorrect username or password.")
+            }
+            else if (response == "Signin-Disabled")
+            {
+                @Html.Raw("Your account is disabled. Contact support please.")
+            }
+            else if (response == "Signup-Failed")
+            {
+                @Html.Raw("Couldn't create your account. Did you already sign up using that email address before?")
+            }
+            else if (response == "Restore-Invalid")
+            {
+                @Html.Raw("Couldn't find your email address in our records.")
+            }
+            else if (response == "Restore-success")
+            {
+                @Html.Raw("We sent you an email with new password.")
+            }
+            else if (response == "ChangePassword-Failed")
+            {
+                @Html.Raw("Changing password has failed.")
+            }
+            else if (response == "ChangePassword-Success")
+            {
+                @Html.Raw("Your password has changed successfully.")
+            }
+        </strong>
+    </div>
+}

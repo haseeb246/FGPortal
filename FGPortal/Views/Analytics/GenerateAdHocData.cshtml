@@ -1,0 +1,66 @@
+﻿@model AdHocModel
+
+@{ 
+    Layout = null;
+}
+
+@if (Model.Data.Count > 0)
+{
+    <div class="table-responsive">
+        <table class="table table-bordered full-width data-table">
+            <thead class="bg-logo-blue text-white">
+                <tr>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("stopid") || Model.ShowAllColumns ? "" : "hidden")">Stop ID</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("routeid") || Model.ShowAllColumns ? "" : "hidden")">Route ID</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("postdate") || Model.ShowAllColumns ? "" : "hidden")">Post Date</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("status") || Model.ShowAllColumns ? "" : "hidden")">Status</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("sequence") || Model.ShowAllColumns ? "" : "hidden")">Sequence</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("location") || Model.ShowAllColumns ? "" : "hidden")">Location</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("references") || Model.ShowAllColumns ? "" : "hidden")">References</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("remarks") || Model.ShowAllColumns ? "" : "hidden")">Remarks</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("stoptype") || Model.ShowAllColumns ? "" : "hidden")">Stop Type</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("podtext") || Model.ShowAllColumns ? "" : "hidden")">POD Text</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("customer") || Model.ShowAllColumns ? "" : "hidden")">Customer</th>
+                    <th class="ws-nw va-m @(Model.DataColumns.Contains("courier") || Model.ShowAllColumns ? "" : "hidden")">Courier</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var each in Model.Data)
+                {
+                    <tr>
+                        <td class="va-m @(Model.DataColumns.Contains("stopid") || Model.ShowAllColumns ? "" : "hidden")">
+                            <a href="#/" onclick="showRouteStopDetails('@each.StopID');">
+                                <strong>
+                                    @each.StopID
+                                </strong>
+                            </a> 
+                        </td>
+                        <td class="va-m @(Model.DataColumns.Contains("routeid") || Model.ShowAllColumns ? "" : "hidden")">
+                            <a href="@Url.Action("Stops", "Route", new { rID = each.RouteID, pDate = each.PostDate.ToString("MM/dd/yyyy") })" target="_blank">
+                                @each.ExternalRouteID
+                            </a>
+                        </td>
+                        <td class="va-m @(Model.DataColumns.Contains("postdate") || Model.ShowAllColumns ? "" : "hidden")">@each.PostDate.ToString("MM/dd/yyyy")</td>
+                        <td class="va-m @(Model.DataColumns.Contains("status") || Model.ShowAllColumns ? "" : "hidden")">@each.Status</td>
+                        <td class="va-m @(Model.DataColumns.Contains("sequence") || Model.ShowAllColumns ? "" : "hidden")">@each.Sequence</td>
+                        <td class="va-m @(Model.DataColumns.Contains("location") || Model.ShowAllColumns ? "" : "hidden")">@each.Location</td>
+                        <td class="va-m @(Model.DataColumns.Contains("references") || Model.ShowAllColumns ? "" : "hidden")">@each.References</td>
+                        <td class="va-m @(Model.DataColumns.Contains("remarks") || Model.ShowAllColumns ? "" : "hidden")">@each.Remarks</td>
+                        <td class="va-m @(Model.DataColumns.Contains("stoptype") || Model.ShowAllColumns ? "" : "hidden")">@each.StopType</td>
+                        <td class="va-m @(Model.DataColumns.Contains("podtext") || Model.ShowAllColumns ? "" : "hidden")">@each.PODText</td>
+                        <td class="va-m @(Model.DataColumns.Contains("customer") || Model.ShowAllColumns ? "" : "hidden")">@each.Customer</td>
+                        <td class="va-m @(Model.DataColumns.Contains("courier") || Model.ShowAllColumns ? "" : "hidden")">@each.Courier</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else if (ViewBag.Error != null && ViewBag.Error)
+{
+    <h4 class="m-t-b-0 text-danger text-center">Something went wrong while loading data. <a href="javascript:void(0)" class="text-primary" onclick="location.reload();">Click Here</a> to try again.</h4>
+}
+else
+{
+    <h4 class="m-t-b-0 text-muted text-center">Couldn't find data that matches your search criteria!</h4>
+}

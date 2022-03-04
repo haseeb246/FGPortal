@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Support";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <h1 class="m-t-b-0">Create a support ticket</h1>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            @if (Context.Request.Query["mid"].Any())
+            {
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Message Sent!</strong> Thank you for contacting us today.
+                    <br />
+                    One of our customer support representatives will be in touch with you shortly.
+                    <strong>Ticket Number: @Context.Request.Query["mid"]</strong>
+                </div>
+            }
+            <div class="well">
+                <form action="@Url.Action("Submit", "Support")" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="name">Your Name *</label>
+                                <input type="text" name="name" class="form-control" placeholder="Name" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="email">Your Email Address *</label>
+                                <input type="text" name="email" class="form-control" placeholder="Email Address" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="topic">Topic *</label>
+                                <select name="topic" class="form-control" required>
+                                    <option>--- Select Topic ---</option>
+                                    <option value="Analytics">Analytics</option>
+                                    <option value="Reports">Reports</option>
+                                    <option value="Routes">Routes</option>
+                                    <option value="Route Stops">Route Stops</option>
+                                    <option value="Rate Auditing">Rate Auditing</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="priority">Priority *</label>
+                                <select name="priority" class="form-control" required>
+                                    <option>--- Select Priority ---</option>
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="files">Attach Files</label>
+                                <input type="file" class="form-control" name="files" multiple />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="subject">Subject *</label>
+                                <input type="text" name="subject" class="form-control" placeholder="Subject" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="message">Message Details *</label>
+                                <textarea name="message" class="form-control full-width no-resize" rows="8" placeholder="Please describe your problem in details" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-lg-offset-9">
+                            <div class="form-group m-b-0">
+                                <button class="btn btn-primary full-width"><strong><i class="fas fa-envelope"></i> Send Message</strong></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <span>(*) Required field.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

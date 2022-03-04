@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @Html.Partial("_GoogleAnalytics")
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="~/Content/img/favicon.ico" />
+    <title>CEBTAS - @ViewBag.Title</title>
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="//cdn.materialdesignicons.com/2.1.99/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="~/Content/site.css?random=@Guid.NewGuid()" rel="stylesheet" />
+    @RenderSection("Styles", false)
+</head>
+<body>
+    <div class="container">
+        <!-- Header Banner -->
+        <div class="row m-t-b-0">
+            <div class="col-lg-12">
+                <a href="@Url.Action("Index", "App")"><img src="~/Content/img/header.jpg" alt="Header Banner" class="img-responsive full-width" /></a>
+            </div>
+        </div>
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-inverse m-b-0">
+            <div class="container full-width">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="@Url.Action("Index", "App")">Home</a></li>
+                        <li><a href="@Url.Action("Index", "Analytics")">Analytics</a></li>
+                        <li><a href="@Url.Action("Index", "Report")">Run Reports</a></li>
+                        <li><a href="@Url.Action("Index", "Track")">Track Shipments</a></li>
+                        <li><a href="@Url.Action("Index", "Logs")">Transaction Logs</a></li>
+                        <li><a href="@Url.Action("Index", "Support")">Support</a></li>
+                        <li><a href="@Url.Action("Index", "Preferences")">Preferences</a></li>
+                        <li><a href="@Url.Action("Signout", "User")">Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Content -->
+        <div class="row m-t-b-0">
+            <div class="col-lg-12">
+                <div class="bg-white p-20 content-inner-div">
+                    <!-- IE section -->
+                    @if (ViewBag.IsIEBrowser != null && ViewBag.IsIEBrowser)
+                    {
+                        <div class="row m-t-b-0">
+                            <div class="col-lg-12">
+                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Outdated or Unsupported Browser Detected</strong>
+                                    <br />
+                                    <strong>CEBTAS</strong> uses modern technologies and much functionality will not work properly in older IE browsers. We recommend that you use either Edge, <a href="https://www.google.com/chrome/" target="_blank"><strong>Chrome</strong></a> or <a href="https://www.mozilla.org/en-US/" target="_blank"><strong>Firefox</strong></a>.
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @Html.Partial("_ActionResponse")
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="footer p-15">
+            <div class="footer-links text-center">
+                @*<a href="#/">Address Book</a>
+                    &nbsp;-&nbsp;*@
+                <a href="@Url.Action("ChangePassword", "User")">Change Password</a>
+                &nbsp;-&nbsp;
+                &copy; @DateTime.Now.Year CEBTAS Solutions, a division of LC Malin LLC.
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvTFqUZEGOgGO6QNg6EzWSk1At1SGrQZQ"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.13.0/moment.min.js"></script>
+    <script src="~/Content/courier-connect.js?random=@Guid.NewGuid()"></script>
+    @RenderSection("Scripts", false)
+    <script>
+        // Set utc offset
+        courierConnect.helpers.setCookie('timezone-offset', moment().utcOffset());
+        function printDiv(divID) {
+            var w = window.open();
+            w.document.write($('#' + divID).html());
+            w.print();
+            w.close();
+        }
+    </script>
+</body>
+</html>

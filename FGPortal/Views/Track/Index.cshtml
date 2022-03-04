@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Track Order(s)";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+            });
+        });
+        function findShipments() {
+            $('#content-div').hide();
+            $('#myForm').hide();
+            $('#loading-screen').show();
+            $.post('@Url.Action("Find", "Track")', $('#myForm').serialize(), (data) => {
+                $('#loading-screen').hide();
+                $('#myForm').show();
+                $('#content-div').show();
+                $('#content-div').html(data);
+                $('#modal').modal('show');
+            });
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <div id="loading-screen" class="form-group full-width text-center" hidden>
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+        <div id="content-div" class="form-group"></div>
+        <form id="myForm" class="form-group" action="javascript:void(0)" method="get">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="full-width">
+                                <tr>
+                                    <td class="va-m" width="70%">
+                                        <h4>Track Shipments</h4>
+                                    </td>
+                                    <td class="va-m" width="30%">
+                                        <a href="javascript:void(0)" class="btn btn-primary full-width" onclick="findShipments();"><strong>Submit</strong></a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Find by</label>
+                                <div class="form-inline">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="findby" value="reference" checked /> Your Reference
+                                        </label>
+                                    </div>
+                                    &emsp;
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="findby" value="number" /> Tracking Number
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>From date</label>
+                                <input type="text" name="fromDate" class="form-control datepicker text-center" placeholder="MM/dd/yyyy" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>To date</label>
+                                <input type="text" name="toDate" class="form-control datepicker text-center" placeholder="MM/dd/yyyy" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group m-b-0">
+                                <label>Tracking or Reference Numbers</label>
+                                <textarea name="tInfo" class="form-control no-resize" rows="7" placeholder="Enter tracking or reference numbers (Separated by a new line)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

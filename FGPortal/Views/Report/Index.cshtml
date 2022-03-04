@@ -1,0 +1,95 @@
+﻿@model ReportSettings
+
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy',
+                endDate: '+0d',
+                autoclose: true,
+                todayHighlight: true,
+            });
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <form action="@Url.Action("Download", "Report")" method="get">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="full-width">
+                                <tr>
+                                    <td class="va-m" width="70%">
+                                        <h4>Run Report</h4>
+                                    </td>
+                                    <td class="va-m" width="30%">
+                                        <button class="btn btn-primary full-width"><strong>Generate Report</strong></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>From date</label>
+                                <input type="text" class="form-control datepicker text-center" name="From" placeholder="MM/dd/yyyy" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>To date</label>
+                                <input type="text" class="form-control datepicker text-center" name="To" placeholder="MM/dd/yyyy" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Report Style</label>
+                                <select class="form-control" name="ReportStyle">
+                                    <option value="@ReportStyle.OnTime_ScheduledRoutes">On Time Report - Scheduled Routes</option>
+                                    @if (ViewBag.AAP)
+                                    {
+                                        <option value="@ReportStyle.AAP_OnTime_ScheduledRoutes">On Time Report - Scheduled Routes (Data)</option>
+                                        <option value="@ReportStyle.AAP_OnTimeWithExceptions">On Time Report - Scheduled Routes (With Exceptions)</option>
+                                        <option value="@ReportStyle.OnTime_Scheduled_Day">On Time Report - Scheduled Routes (Day)</option>
+                                        <option value="@ReportStyle.OnTime_Scheduled_Overnight">On Time Report - Scheduled Routes (Overnight)</option>
+                                    }
+                                    <option value="@ReportStyle.OnTime_OnDemand">On Time Report - On Demand</option>
+                                    <option value="@ReportStyle.WhatsBeenDelivered_ScheduledRoutes">What's Been Delivered Report - Scheduled Routes</option>
+                                    <option value="@ReportStyle.Late_Release">Late Release Report</option>
+                                    <option value="@ReportStyle.Audit_Miles_Stops_Summary">Miles and Stops Auditing - Summary</option>
+                                    <option value="@ReportStyle.Audit_Miles_Stops_Detailed">Miles and Stops Auditing - Detailed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Company</label>
+                                <select class="form-control" name="CompanyID">
+                                    <option value="0">All (Default)</option>
+                                    @foreach (var each in Model.Companies.OrderBy(x => x.Value))
+                                    {
+                                        <option value="@each.Key">@each.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,309 @@
+﻿@model RouteDetailsModelView
+
+@{
+    ViewBag.Title = "Route Stops";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" />
+}
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy',
+                endDate: '+4d',
+                autoclose: true,
+                todayHighlight: true,
+            });
+            $('.data-table').DataTable({
+                'dom': "<'row'<'col-lg-12't>>" + "<'row'<'col-lg-12'B>>",
+                'ordering': false,
+                'paging': false
+            });
+        });
+        function showRouteStopDetails(sid) {
+            $('#modal').modal('show');
+            $.get('@Url.Action("StopDetails", "Route")?sid=' + sid, (data) => {
+                $('#routeStopDetailsContent').html(data);
+            });
+        };
+        function updatePostDate(date, routeId) {
+            $('#content-div').hide();
+            $('#loading-screen').show();
+            window.location.replace('@Url.Action("Stops", "Route")?rID=' + routeId + '&pDate=' + encodeURIComponent(date));
+        };
+        function showMapForRoute(routeID, postDate) {
+            $.get('@Url.Action("RenderRouteMap", "Route")?rID=' + routeID + '&pDate=' + encodeURIComponent(postDate), function (data) {
+                $('#RouteMapDiv').html(data);
+                $('#mapModal').modal('show');
+            });
+        };
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group text-center">
+            <div class="btn-group" role="group" aria-label="...">
+                <a href="@Url.Action("List", "Route")" class="btn btn-default btn-lg active"><i class="fas fa-road"></i> Routes View</a>
+                @*<a href="@Url.Action("DisplayOrders", "App")" class="btn btn-default btn-lg"><i class="fas fa-tasks"></i> On-Demand Orders View</a>*@
+                <a href="@Url.Action("Map", "Route")" class="btn btn-default btn-lg"><i class="fas fa-map"></i> Map View</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="loading-screen" class="full-width text-center" hidden>
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+        <div id="content-div">
+            <div class="form-group">
+                <table class="full-width">
+                    <tr>
+                        <td class="va-m">
+                            <table>
+                                <tr>
+                                    <td class="va-m">
+                                        <span>Route ID:</span>
+                                    </td>
+                                    <td class="va-m" style="padding-left: 5px;">
+                                        <strong>@Model.RouteIdExt</strong>
+                                    </td>
+                                    <td class="va-m" style="padding-left: 25px;">
+                                        <span>Date:</span>
+                                    </td>
+                                    <td class="va-m" style="padding-left: 5px;">
+                                        <a href="javascript:void(0)" onclick="updatePostDate('@DateTime.Parse(Model.PostDate).Date.AddDays(-1).Date.ToString("MM/dd/yyyy")', '@(Context.Request.Query["rID"])');">
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </a>
+                                    </td>
+                                    <td class="va-m" style="padding-left: 5px;">
+                                        <input type="text" class="form-control datepicker text-center" value="@Model.PostDate" placeholder="MM/dd/yyyy" autocomplete="off" onchange="updatePostDate(this.value, '@(Context.Request.Query["rID"])');" />
+                                    </td>
+                                    <td class="va-m" style="padding-left: 5px;">
+                                        <a href="javascript:void(0)" onclick="updatePostDate('@DateTime.Parse(Model.PostDate).Date.AddDays(1).Date.ToString("MM/dd/yyyy")', '@(Context.Request.Query["rID"])');">
+                                            <i class="fa fa-chevron-circle-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="va-m text-right">
+                            <a href="javascript:void(0);" onclick="showMapForRoute('@Model.RouteId', '@Model.PostDate');">
+                                <i class="fa fa-map-marker-alt"></i>
+                                Show this route on map
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group m-b-0">
+                @if (Model.RouteStops.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table id="routeStopsTable" class="table table-bordered full-width data-table">
+                            <thead class="bg-logo-blue text-white">
+                                <tr>
+                                    <th class="ws-nw va-m">Stop ID</th>
+                                    <th class="ws-nw va-m">Seq</th>
+                                    <th class="ws-nw va-m" style="min-width: 170px;">Address</th>
+                                    <th class="ws-nw va-m">Type</th>
+                                    <th class="ws-nw va-m">Pcs</th>
+                                    <th class="ws-nw va-m">References</th>
+                                    <th class="ws-nw va-m">Time Min / Pref / Max</th>
+                                    <th class="ws-nw va-m">Arrival<br />Time</th>
+                                    <th class="ws-nw va-m">Completion<br />Time</th>
+                                    <th class="ws-nw va-m">
+                                        Elapsed
+                                        <i class="mdi mdi-help-circle" data-toggle="tooltip" data-placement="top" title="Elapsed Time HH:MM:SS"></i>
+                                    </th>
+                                    <th class="ws-nw va-m">Status</th>
+                                    <th class="ws-nw va-m">Exceptions<br />(Count - Codes)</th>
+                                    <th class="ws-nw va-m">@Html.Raw(ViewBag.CustomerId > 0 ? "Courier" : "Customer")</th>
+                                    <th class="ws-nw va-m">Prior 60 Days <br /> On-time %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var stop in Model.RouteStops.OrderBy(x => x.Sequence))
+                                {
+                                    string eCode = stop.HasException ? $"exception {stop.MostSevereExceptionType.Code}" : "";
+                                    string eStyle = stop.HasException ? $"background-color: {stop.MostSevereExceptionType.BackgroundColorHex}" : "";
+
+                                    <tr class="routeTR @eCode" style="@eStyle">
+                                        <td class="va-m">
+                                            @if (ViewBag.UpdateStop)
+                                            {
+                                                <a href="@Url.Action("Update", "Stop", new { stopId = stop.StopId })" data-toggle="tooltip" data-placement="top" title="Manually close or update stop">
+                                                    <i class="mdi mdi-pen"></i>
+                                                </a>
+                                                @:&nbsp;
+                                            }
+                                            <a href="javascript:void(0);" onclick="showRouteStopDetails('@stop.StopId');"><strong>@stop.StopId</strong></a>
+                                        </td>
+                                        <td class="va-m">
+                                            @stop.Sequence
+                                        </td>
+                                        <td class="va-m">
+                                            @if (!string.IsNullOrWhiteSpace(stop.Location.Name))
+                                            {
+                                                if (stop.Location.Name.Length > 25)
+                                                {
+                                                    <small class="text-info" data-toggle="tooltip" data-placement="top" title="@stop.Location.Name">
+                                                        @stop.Location.Name.Substring(0, 25)
+                                                        <i class="mdi mdi-dots-horizontal"></i>
+                                                    </small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-info">
+                                                        @stop.Location.Name
+                                                    </small>
+                                                }
+                                                <br />
+                                            }
+                                            <span>
+                                                @Html.Raw(stop.Address)
+                                            </span>
+                                        </td>
+                                        <td class="va-m">
+                                            @stop.StopType
+                                        </td>
+                                        <td class="va-m">
+                                            @stop.Pieces
+                                        </td>
+                                        <td class="va-m">
+                                            @stop.Reference
+                                        </td>
+                                        <td class="va-m">
+                                            @(stop.TimeMin?.ToString("hh:mm tt")) / @(stop.TimePref?.ToString("hh:mm tt")) / @(stop.TimeMax?.ToString("hh:mm tt"))
+                                        </td>
+                                        <td class="va-m">
+                                            @(stop.TimeArrived?.ToString("MM/dd/yyyy"))
+                                            <br />
+                                            @(stop.TimeArrived?.ToString("hh:mm:ss tt"))
+                                        </td>
+                                        <td class="va-m">
+                                            @(stop.TimeCompleted?.ToString("MM/dd/yyyy"))
+                                            <br />
+                                            @(stop.TimeCompleted?.ToString("hh:mm:ss tt"))
+                                        </td>
+                                        <td class="va-m">
+                                            @Html.Raw(stop.TimeArrived.HasValue && stop.TimeCompleted.HasValue ? stop.ElapsedTime : stop.TimeArrived.HasValue && !stop.TimeCompleted.HasValue ? "Now" : "")
+                                        </td>
+                                        <td class="va-m">
+                                            @stop.Status
+                                        </td>
+                                        <td class="va-m">
+                                            @if (stop.HasException)
+                                            {
+                                                @Html.Raw(stop.SystemExceptionCount + " - ")
+                                                List<string> exHtml = new List<string>();
+                                                stop.AdjustedStopExceptionTypes().Select(x => x.Description).Distinct().ToList().ForEach(x =>
+                                                {
+                                                    string codeDescription = stop.StatusCodeDescription.FirstOrDefault(y => y.Item1 == x)?.Item2;
+                                                    if (!string.IsNullOrWhiteSpace(codeDescription))
+                                                    {
+                                                        exHtml.Add($"<span data-toggle='tooltip' data-placement='top' title='{codeDescription}'>{x.Replace(" Exception", "")}</span>");
+                                                    }
+                                                    else
+                                                    {
+                                                        exHtml.Add($"<span>{x.Replace(" Exception", "")}</span>");
+                                                    }
+                                                });
+                                                @Html.Raw(string.Join(", ", exHtml))
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("0")
+                                            }
+                                        </td>
+                                        <td class="va-m">
+                                            @Html.Raw(ViewBag.CustomerId > 0 ? stop.Courier : stop.CustomerName)
+                                        </td>
+                                        <td class="va-m">
+                                            @if (stop.OnTimePercentage.HasValue)
+                                            {
+                                                <div @Html.Raw(stop.SevenDayOnTimePercentage.HasValue ? $"data-toggle=\"tooltip\" data-placement=\"top\" title=\"Prior 7 Days On-time %: {stop.SevenDayOnTimePercentage.Value.ToString("#0.00")}%\"" : "")>
+                                                    <i class="fa fa-@stop.OnTimeIcon text-@stop.OnTimeColor"></i>
+                                                    @stop.OnTimePercentage.Value.ToString("#0.00")%
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("N/A")
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <h3 class="m-b-0 text-center">No stops for post date @Model.PostDate</h3>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-width-70pct" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Route Stop Details</h4>
+            </div>
+            <div class="modal-body">
+                <div id="loading-div" class="full-width text-center" hidden>
+                    <div class="sk-folding-cube">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
+                </div>
+                <div id="content-div">
+                    <div class="form-group text-right">
+                        <button class="btn btn-primary" onclick="printDiv('routeStopDetailsContent');">Print / Download</button>
+                    </div>
+                    <div id="routeStopDetailsContent" class="form-group m-b-0">
+                        <!-- AJAX Data -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mapModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-width-70pct" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Route Stops</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="RouteMapDiv" class="full-width" style="height: 500px;">
+                            <!-- AJAX Data -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,362 @@
+﻿@using CourierConnect.DataAccess.Repository
+@model List<RouteInfo>
+
+@{
+    ViewBag.Title = "Routes";
+    Layout = "~/Views/_PrivateLayout.cshtml";
+}
+@section Styles {
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" />
+}
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            endDate: '+4d',
+            autoclose: true,
+            todayHighlight: true,
+        });
+        $('.data-table').DataTable({
+            'dom': "<'row'<'col-lg-12't>>" + "<'row'<'col-lg-12'B>>",
+            'ordering': true,
+            'paging': false
+        });
+        setTimeout(() => {
+            filterRoutes('@ViewBag.Filter_Display', false);
+        }, 100);
+        page_init();
+    });
+    function page_init() {
+        $('#advanced-search-by').val('@((Context.Request.Query["searchBy"].Any()) ? Context.Request.Query["searchBy"] : "location-name")');
+        $('#advanced-search-for').val('@((Context.Request.Query["searchFor"].Any()) ? Context.Request.Query["searchFor"] : "")');
+    }
+    function filterRoutes(type, setCookie) {
+        if (setCookie) {
+            courierConnect.helpers.setCookie('filter-dr-display', type);
+        }
+        else {
+            $('#filter-dr-d').val(type);
+        }
+
+        if (type === 'route') {
+            $('.routeTR').show();
+        } else if (type === 'exception') {
+            $('.routeTR').hide();
+            $('tr[class*="exception"]').show();
+        } else {
+            $('.routeTR').hide();
+            $('tr[class*="' + type + '"]').show();
+        }
+    }
+    function filterRoutesByDate(element) {
+        courierConnect.helpers.setCookie('filter-dr-postdate', element.value);
+        $('#content-div').hide();
+        $('#loading-screen').show();
+        window.location.replace('@Url.Action("List", "Route")?pDate=' + encodeURIComponent(element.value));
+    }
+    function showMapForRoute(routeID, postDate) {
+        $.get('@Url.Action("RenderRouteMap", "Route")?rID=' + routeID + '&pDate=' + encodeURIComponent(postDate), function (data) {
+            $('#RouteMapDiv').html(data);
+            $('#mapModal').modal('show');
+        });
+    }
+    function searchTable(element) {
+        $('.data-table').DataTable().search(element.value).draw();
+    }
+    function advancedSearch() {
+        $('#advanced-search-modal').modal('hide');
+        $('#content-div').hide();
+        $('#loading-screen').show();
+        window.location.replace('@Url.Action("List", "Route")?pDate=' + encodeURIComponent('@ViewBag.Filter_PostDate') + '&searchBy=' + $('#advanced-search-by').val() + '&searchFor=' + encodeURIComponent($('#advanced-search-for').val()));
+    }
+    function clearAdvancedSearch() {
+        $('#advanced-search-modal').modal('hide');
+        $('#content-div').hide();
+        $('#loading-screen').show();
+        window.location.replace('@Url.Action("List", "Route")?pDate=' + encodeURIComponent('@ViewBag.Filter_PostDate'));
+    }
+</script>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group text-center">
+            <div class="btn-group" role="group" aria-label="...">
+                <a href="@Url.Action("List", "Route")" class="btn btn-default btn-lg active"><i class="fas fa-road"></i> Routes View</a>
+                @*<a href="@Url.Action("DisplayOrders", "App")" class="btn btn-default btn-lg"><i class="fas fa-tasks"></i> On-Demand Orders View</a>*@
+                <a href="@Url.Action("Map", "Route")" class="btn btn-default btn-lg"><i class="fas fa-map"></i> Map View</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row m-t-10">
+    <div class="col-lg-12">
+        <div id="loading-screen" class="full-width text-center" hidden>
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+        <div id="content-div">
+            <div class="form-group">
+                <table class="full-width">
+                    <tr>
+                        <td class="va-m">
+                            <table>
+                                <tr>
+                                    <td class="va-m" style="padding:0 5px 0 0;">
+                                        <span>Display</span>
+                                    </td>
+                                    <td class="va-m" style="padding:0 5px 0 5px;">
+                                        <select id="filter-dr-d" class="form-control text-center" onchange="filterRoutes(this.value, true);">
+                                            <option value="route">All Routes</option>
+                                            <option value="exception">All Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missed_Stop">Missed Stop Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Late">Late Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Out_Of_Sequence">Out Of Sequence Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missing_POD">Missing POD Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_REAL">Courier Specific Exceptions</option>
+                                        </select>
+                                    </td>
+                                    <td class="va-m" style="padding:0 5px 0 5px;">
+                                        <span>Date</span>
+                                    </td>
+                                    <td class="va-m" style="padding:0 5px 0 5px;">
+                                        <input type="text" class="form-control datepicker text-center" value="@ViewBag.Filter_PostDate" placeholder="MM/dd/yyyy" autocomplete="off" onchange="filterRoutesByDate(this);" />
+                                    </td>
+                                    <td class="va-m" style="padding:0 5px 0 5px;">
+                                        <span>Search</span>
+                                    </td>
+                                    <td class="va-m" style="padding:0 0 0 5px;">
+                                        <input type="text" class="form-control text-center" placeholder="Search inside table" autocomplete="off" onkeyup="searchTable(this);" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="va-m text-right">
+                            <a href="javascript:void(0)" class="@(ViewBag.AdvancedSearchApplied != null && ViewBag.AdvancedSearchApplied ? "text-success" : "text-primary")" style="text-decoration: none;" onclick="$('#advanced-search-modal').modal('show');">
+                                <i class="fa fa-search-plus"></i>
+                                Advanced Search Filters
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                @if (Model.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered m-b-0 data-table">
+                            <thead class="bg-logo-blue text-white">
+                                <tr>
+                                    <th class="ws-nw va-m text-center">Map</th>
+                                    <th class="ws-nw va-m">Route ID</th>
+                                    <th class="ws-nw va-m">Description</th>
+                                    <th class="ws-nw va-m">Fleet Name</th>
+                                    <th class="ws-nw va-m">Start Time</th>
+                                    <th class="ws-nw va-m">End Time</th>
+                                    <th class="ws-nw va-m">Stops</th>
+                                    <th class="ws-nw va-m">Completed</th>
+                                    <th class="ws-nw va-m">Exceptions<br />(Count - Codes)</th>
+                                    <th class="ws-nw va-m">@Html.Raw(ViewBag.CustomerId > 0 ? "Courier" : "Customer")</th>
+                                    <th class="ws-nw va-m">Today's <br /> On-time %</th>
+                                    <th class="ws-nw va-m">Prior 60 Days <br /> On-time %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var route in Model.OrderBy(x => x.FleetName))
+                                {
+                                    bool hasException = route.Stops.Any(x => x.Exceptions.Any());
+                                    string eCodes = hasException ? $"exception {string.Join(" ", route.Stops.SelectMany(x => x.Exceptions).Select(y => y.Code).Distinct())}" : "";
+                                    string eStyle = hasException ? $"background-color: {route.TopException.Color}" : "";
+
+                                    <tr class="routeTR @eCodes" style="@eStyle">
+                                        <td class="va-m text-center">
+                                            <a href="javascript:void(0);" onclick="showMapForRoute('@route.ID', '@route.PostDate.ToString("MM/dd/yyyy")');">
+                                                <i class="fas fa-map-marker-alt fa-2x"></i>
+                                            </a>
+                                        </td>
+                                        <td class="va-m">
+                                            <a href="@Url.Action("Stops", "Route", new { rID = route.ID, pDate = route.PostDate.ToString("MM/dd/yyyy") })">@route.ExternalID</a>
+                                        </td>
+                                        <td class="va-m">
+                                            @route.Description
+                                        </td>
+                                        <td class="va-m">
+                                            @route.FleetName
+                                        </td>
+                                        <td class="va-m">
+                                            @Html.Raw(route.StartTime?.ToString("hh:mm tt"))
+                                            @if (route.StartTime.HasValue && route.StartTime.Value.Date > route.PostDate)
+                                            {
+                                                <i class="mdi mdi-clock text-info" data-toggle="tooltip" data-placement="top" title="Route starts next day"></i>
+                                            }
+                                        </td>
+                                        <td class="va-m">
+                                            @Html.Raw(route.EndTime?.ToString("hh:mm tt"))
+                                            @if (route.EndTime.HasValue && route.EndTime.Value.Date > route.PostDate)
+                                            {
+                                                <i class="mdi mdi-clock text-info" data-toggle="tooltip" data-placement="top" title="Route ends next day"></i>
+                                            }
+                                        </td>
+                                        <td class="va-m">
+                                            @route.Stops.Count()
+                                        </td>
+                                        <td class="va-m">
+                                            @route.Stops.Count(x => x.Completed)
+                                        </td>
+                                        <td class="va-m">
+                                            @if (hasException)
+                                            {
+                                                @Html.Raw(route.Stops.Count(x => x.Exceptions.Any()) + " - ")
+
+                                                var systemExceptions = route.Stops.SelectMany(x => x.Exceptions).Where(x => x.IsSystem).GroupBy(x => x.Code).Select(x => x.FirstOrDefault()).ToList();
+                                                var otherExceptions = route.Stops.SelectMany(x => x.Exceptions).Where(x => !x.IsSystem).GroupBy(x => x.CustomCode).Select(x => x.FirstOrDefault()).ToList();
+                                                var spans = new List<string>();
+
+                                                if (otherExceptions.Count > 0)
+                                                {
+                                                    otherExceptions.OrderByDescending(x => x.Severity).ToList().ForEach(x =>
+                                                    spans.Add($"<span data-toggle='tooltip' data-placement='top' title='{x.CustomDescription ?? x.Description}'>{(x.CustomCode ?? x.Code)}</span>")
+                                                    );
+                                                }
+                                                else
+                                                {
+                                                    systemExceptions.OrderByDescending(x => x.Severity).Select(x => x.Description.Replace("Exception", "").Trim()).Distinct().ToList().ForEach(x =>
+                                                    spans.Add($"<span data-toggle='tooltip' data-placement='top' title=''>{x}</span>")
+                                                    );
+                                                }
+
+                                                @Html.Raw(string.Join(", ", spans))
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("0")
+                                            }
+                                        </td>
+                                        <td class="va-m">
+                                            @Html.Raw(ViewBag.CustomerId > 0 ? route.CourierName : route.CustomerName)
+                                        </td>
+                                        <td class="va-m">
+                                            @route.TodaysOnTimePercentage.ToString("#0.00")%
+                                        </td>
+                                        <td class="va-m">
+                                            <div data-toggle="tooltip" data-placement="top" title="Prior 7 Days On-time %: @route.SevenDayOnTimePercentage.ToString("#0.00")%">
+                                                <i class="fa fa-@route.SixtyDayOnTimeIcon text-@route.SixtyDayOnTimeColor"></i>
+                                                @route.SixtyDayOnTimePercentage.ToString("#0.00")%
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (ViewBag.Error != null && ViewBag.Error)
+                {
+                    <h3 class="text-danger text-center">Something went wrong while loading data. <a href="javascript:void(0)" class="text-primary" onclick="location.reload();">Click Here</a> to try again.</h3>
+                }
+                else
+                {
+                    <h3 class="text-muted text-center">No routes found for @ViewBag.Filter_PostDate</h3>
+                }
+            </div>
+            <div class="form-group text-center">
+                <div class="full-width m-t-b-5 p-5 text-right">
+                    <a href="@Url.Action("Preferences", "App")"><strong><i class="fa fa-cogs"></i> Click here to change on-time thresholds</strong></a>
+                </div>
+                @foreach (ExceptionType each in ViewHelper.SystemExceptions())
+                {
+                    string code = each.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.Code;
+
+                    <div class="full-width m-t-b-5 p-5" style="background-color: @each.BackgroundColorHex">
+                        <a href="javascript:void(0)" class="text-black" style="text-decoration: none;" onclick="filterRoutes('@code', false);">
+                            <strong>
+                                @ViewHelper.LegendDescription(each, ViewBag.UserId)
+                            </strong>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mapModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-width-70pct" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Route Stops</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="RouteMapDiv" class="full-width" style="height: 500px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="advanced-search-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Advanced Search Options</h4>
+            </div>
+            <div class="modal-body">
+                <table class="full-width">
+                    <tr>
+                        <td class="va-m p-10">
+                            <label>Search By</label>
+                            <select class="form-control" id="advanced-search-by">
+                                <option value="location-name">Location's Name</option>
+                                <option value="location-street">Location's Street Address</option>
+                                <option value="location-city">Location's City</option>
+                                <option value="location-state">Location's State (Short Code)</option>
+                                <option value="location-zip">Location's Zip Code</option>
+                                <option value="reference">Reference Number</option>
+                            </select>
+                        </td>
+                        <td class="va-m p-10">
+                            <label>Search For</label>
+                            <input type="text" class="form-control" placeholder="e.g: 12345 or Chicago." id="advanced-search-for" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <table class="full-width">
+                    <tr>
+                        <td class="va-m text-left">
+                            @if (ViewBag.AdvancedSearchApplied != null && ViewBag.AdvancedSearchApplied)
+                            {
+                                <a href="javascript:void(0)" class="text-danger" style="text-decoration: none;" onclick="clearAdvancedSearch();">
+                                    <i class="fa fa-times"></i>
+                                    Clear Search Filters
+                                </a>
+                            }
+                        </td>
+                        <td class="va-m text-right">
+                            <a href="javascript:void(0)" class="btn btn-primary" onclick="advancedSearch();">
+                                <strong>
+                                    Search
+                                </strong>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

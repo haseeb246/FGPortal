@@ -1,0 +1,2 @@
+OrderID,CustID,LocalName,Date Due,DeliveredTime,DueTimeFrom,DueTimeTo,OrderType,Terminal,FleetID,On Time,DeliveryCustomerName,Address,DestCity,DestState,Reference1,Reference2
+2275684,202109,"BMW of North America, LLC",1/29/2018,1/29/2018 11:01,1/29/2018 12:05,1/29/2018 12:05,Normal (Van),NC CLT Charlotte,2102,YES,ATT,9139 Research Dr ,Charlotte,NC,G6181476,21022464

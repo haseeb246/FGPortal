@@ -1,0 +1,97 @@
+﻿@model RouteStopDetailsViewModel
+
+@if (Model.Stop != null)
+{
+    <div class="form-group">
+        <div class="table-responsive">
+            <table id="rStopDetailsTable" class="table table-bordered full-width">
+                <tbody>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>Route ID</strong></td>
+                        <td class="va-m" width="75%">@Model.RouteId</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>Address</strong></td>
+                        <td class="va-m" width="75%">@Html.Raw(Model.Stop.Address)</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>References</strong></td>
+                        <td class="va-m" width="75%">@Model.Stop.Reference</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>Pieces</strong></td>
+                        <td class="va-m" width="75%">@Model.Stop.Pieces</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>Weight</strong></td>
+                        <td class="va-m" width="75%">@Model.Stop.Weight</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>Completed Time</strong></td>
+                        <td class="va-m" width="75%">@(Model.Stop.TimeCompleted?.ToString("MM/dd/yyyy hh:mm tt"))</td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>POD Name</strong></td>
+                        <td class="va-m" width="75%">
+                            @Model.Stop.PODText
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="va-m" width="25%"><strong>POD Signature</strong></td>
+                        <td class="va-m" width="75%">
+                            <img id="rd-pod-signature" src="@Model.Stop.PODSignatureEncoded" style="max-width: 200px;" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    if (Model.Parcels.Count > 0)
+    {
+        <div class="form-group">
+            <table id="rStopParcelsTable" class="table table-bordered full-width">
+                <thead class="bg-logo-blue text-white">
+                    <tr>
+                        <th class="ws-nw">Parcel ID</th>
+                        <th class="ws-nw">Barcode</th>
+                        <th class="ws-nw">Time Scanned</th>
+                        <th class="ws-nw">Comments</th>
+                        <th class="ws-nw">Pieces</th>
+                        <th class="ws-nw">Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (RouteStopParcel each in Model.Parcels)
+                    {
+                        <tr>
+                            <td class="va-m">
+                                @each.ExtParcelID
+                            </td>
+                            <td class="va-m">
+                                @each.Barcode
+                            </td>
+                            <td class="va-m">
+                                @(each.ScannedIn?.ToString("MM/dd/yyyy hh:mm tt"))
+                            </td>
+                            <td class="va-m">
+                                @each.Comment
+                            </td>
+                            <td class="va-m">
+                                1
+                            </td>
+                            <td class="va-m">
+                                @each.Weight
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else
+{
+    <div class="form-group text-center">
+        <h3 class="m-b-0 text-muted">Couldn't find route stop</h3>
+    </div>
+}

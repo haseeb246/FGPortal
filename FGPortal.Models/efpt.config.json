@@ -1,0 +1,159 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "Cebtasazuredb01Context",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": null,
+   "ProjectRootNamespace": "FGPortal.Models",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[Courier]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CourierCoverage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Customer]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Driver]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Exception]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FileContent]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Fleet]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InternetUser]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InternetUserMapping]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InternetUserViewable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Location]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Log]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MessageLog]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OrderParcel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ParcelType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PortalAnnouncement]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Route]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RoutePerformance]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteStop]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteStopARCHIVE]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteStopHistory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteStopParcel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteStopType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ServiceLevel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ServiceType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Signature]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SupportTicket]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TransactionLog]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPreference]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserRestriction]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "cebtasazuredb01.cebtasazuredb01",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
