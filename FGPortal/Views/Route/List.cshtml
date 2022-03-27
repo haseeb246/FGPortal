@@ -1,4 +1,5 @@
-﻿@using CourierConnect.DataAccess.Repository
+﻿@using FGPoral.Models
+@using FGPortal.Models.Enums
 @model List<RouteInfo>
 
 @{
@@ -118,11 +119,11 @@
                                         <select id="filter-dr-d" class="form-control text-center" onchange="filterRoutes(this.value, true);">
                                             <option value="route">All Routes</option>
                                             <option value="exception">All Exceptions</option>
-                                            <option value="@ExceptionTypeCode.Exception_Missed_Stop">Missed Stop Exceptions</option>
-                                            <option value="@ExceptionTypeCode.Exception_Late">Late Exceptions</option>
-                                            <option value="@ExceptionTypeCode.Exception_Out_Of_Sequence">Out Of Sequence Exceptions</option>
-                                            <option value="@ExceptionTypeCode.Exception_Missing_POD">Missing POD Exceptions</option>
-                                            <option value="@ExceptionTypeCode.Exception_REAL">Courier Specific Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missed_Stop.GetKey()">Missed Stop Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Late.GetKey()">Late Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Out_Of_Sequence.GetKey()">Out Of Sequence Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_Missing_POD.GetKey()">Missing POD Exceptions</option>
+                                            <option value="@ExceptionTypeCode.Exception_REAL.GetKey()">Courier Specific Exceptions</option>
                                         </select>
                                     </td>
                                     <td class="va-m" style="padding:0 5px 0 5px;">
@@ -179,12 +180,12 @@
 
                                     <tr class="routeTR @eCodes" style="@eStyle">
                                         <td class="va-m text-center">
-                                            <a href="javascript:void(0);" onclick="showMapForRoute('@route.ID', '@route.PostDate.ToString("MM/dd/yyyy")');">
+                                            <a href="javascript:void(0);" onclick="showMapForRoute('@route.Id', '@route.PostDate.ToString("MM/dd/yyyy")');">
                                                 <i class="fas fa-map-marker-alt fa-2x"></i>
                                             </a>
                                         </td>
                                         <td class="va-m">
-                                            <a href="@Url.Action("Stops", "Route", new { rID = route.ID, pDate = route.PostDate.ToString("MM/dd/yyyy") })">@route.ExternalID</a>
+                                            <a href="@Url.Action("Stops", "Route", new { rID = route.Id, pDate = route.PostDate.ToString("MM/dd/yyyy") })">@route.ExternalID</a>
                                         </td>
                                         <td class="va-m">
                                             @route.Description
@@ -274,7 +275,7 @@
                 </div>
                 @foreach (ExceptionType each in ViewHelper.SystemExceptions())
                 {
-                    string code = each.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.Code;
+                    string code = each.Code.Contains(ExceptionTypeCode.Exception_Late.GetKey()) ? ExceptionTypeCode.Exception_Late.GetKey() : each.Code;
 
                     <div class="full-width m-t-b-5 p-5" style="background-color: @each.BackgroundColorHex">
                         <a href="javascript:void(0)" class="text-black" style="text-decoration: none;" onclick="filterRoutes('@code', false);">

@@ -1,4 +1,6 @@
-﻿@model List<RouteInfo>
+﻿@using FGPoral.Models
+@using FGPortal.Models.Enums
+@model List<RouteInfo>
 
 @{
     ViewBag.Title = "Map View";
@@ -98,17 +100,17 @@
             @foreach(var each in Model)
             {
                 bool hasException = each.TopException != null;
-                string newCode = hasException ? each.TopException.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.TopException.Code : null;
+                string newCode = hasException ? each.TopException.Code.Contains(ExceptionTypeCode.Exception_Late.GetKey()) ? ExceptionTypeCode.Exception_Late.GetKey() : each.TopException.Code : null;
                 @:markerObjs.push(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
                     lat = each.Stops.FirstOrDefault().Latitude,
                     lng = each.Stops.FirstOrDefault().Longitude,
-                    id = each.ID.ToString(),
-                    url = Url.Action("Stops", "Route", new { rID = each.ID, pDate = each.PostDate.ToString("MM/dd/yyyy") }),
+                    id = each.Id.ToString(),
+                    url = Url.Action("Stops", "Route", new { rID = each.Id, pDate = each.PostDate.ToString("MM/dd/yyyy") }),
                     classes = $"route,state-{each.Stops.FirstOrDefault().State.Trim().ToUpper()},entity-*,entity-{each.CourierName},entity-{each.CustomerName},{(hasException ? $"exception,{newCode}" : "")}",
                     visible = false,
                     icon = $"https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|{(hasException ? each.TopException.Color.Replace("#", "") : "FFFFFF")}|000000",
-                    infoWindowContent = $"Route ID: <strong>{each.ExternalID}</strong><br />Status: <strong>{(hasException ? (newCode == ExceptionTypeCode.Exception_REAL ? "Courier Exception" : each.TopException.CustomDescription ?? each.TopException.Description) : "OK")}</strong>",
+                    infoWindowContent = $"Route ID: <strong>{each.ExternalID}</strong><br />Status: <strong>{(hasException ? (newCode == ExceptionTypeCode.Exception_REAL.GetKey() ? "Courier Exception" : each.TopException.CustomDescription ?? each.TopException.Description) : "OK")}</strong>",
                 })));
             }
 
@@ -201,7 +203,7 @@
                         Model
                         .Where(x => x.HasException)
                         .OrderByDescending(x => x.TopException.Severity)
-                        .Select(x => x.TopException.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : x.TopException.Code)
+                        .Select(x => x.TopException.Code.Contains(ExceptionTypeCode.Exception_Late.GetKey()) ? ExceptionTypeCode.Exception_Late.GetKey() : x.TopException.Code)
                         .Distinct())
                     {
                         var routes = Model.Where(x => x.HasException && x.TopException.Code.Contains(eachCode)).ToList();
@@ -211,7 +213,7 @@
                                 <ul class="list-group">
                                     <li class="list-group-item">
                                         <span class="badge">@routes.Count</span>
-                                        <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-exception-@eachCode" aria-expanded="false" aria-controls="collapse-exception-@eachCode"><strong>@(eachCode == ExceptionTypeCode.Exception_Late ? "Late Exception" : eachCode == ExceptionTypeCode.Exception_REAL ? "Courier Specific Exception" : routes.First().TopException.Description)</strong></a>
+                                        <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-exception-@eachCode" aria-expanded="false" aria-controls="collapse-exception-@eachCode"><strong>@(eachCode == ExceptionTypeCode.Exception_Late.GetKey() ? "Late Exception" : eachCode == ExceptionTypeCode.Exception_REAL.GetKey() ? "Courier Specific Exception" : routes.First().TopException.Description)</strong></a>
                                     </li>
                                 </ul>
                                 <div id="collapse-exception-@eachCode" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-exception-@eachCode">
@@ -224,12 +226,12 @@
                                                         <table class="full-width">
                                                             <tr>
                                                                 <td class="va-m" width="80">
-                                                                    <a href="@Url.Action("Stops", "Route", new { rID = route.ID, pDate = route.PostDate.ToString("MM/dd/yyyy") })">
+                                                                    <a href="@Url.Action("Stops", "Route", new { rID = route.Id, pDate = route.PostDate.ToString("MM/dd/yyyy") })">
                                                                         <strong>@route.ExternalID</strong>
                                                                     </a>
                                                                 </td>
                                                                 <td class="va-m text-right" width="20">
-                                                                    <a href="javascript:courierConnect.maps.centerMarkerOnMap('@route.ID');">
+                                                                    <a href="javascript:courierConnect.maps.centerMarkerOnMap('@route.Id');">
                                                                         <strong><i class="fas fa-map-marker-alt fa-2x"></i></strong>
                                                                     </a>
                                                                 </td>
@@ -341,7 +343,7 @@
                         </div>
                         @foreach (ExceptionType each in ViewHelper.SystemExceptions())
                         {
-                            string code = each.Code.Contains(ExceptionTypeCode.Exception_Late) ? ExceptionTypeCode.Exception_Late : each.Code;
+                            string code = each.Code.Contains(ExceptionTypeCode.Exception_Late.GetKey()) ? ExceptionTypeCode.Exception_Late.GetKey() : each.Code;
                             <div class="full-width m-t-b-5 p-5" style="background-color: @each.BackgroundColorHex">
                                 <a href="javascript:void(0)" class="text-black" style="text-decoration: none;" onclick="updateDisplay('@code', false, true);">
                                     <strong>

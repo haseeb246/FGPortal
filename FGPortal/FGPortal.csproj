@@ -13,7 +13,6 @@
     <Compile Remove="Views\Logs\**" />
     <Compile Remove="Views\Preferences\**" />
     <Compile Remove="Views\Report\**" />
-    <Compile Remove="Views\Route\**" />
     <Compile Remove="Views\Stop\**" />
     <Compile Remove="Views\Support\**" />
     <Compile Remove="Views\Track\**" />
@@ -23,7 +22,6 @@
     <Content Remove="Views\Logs\**" />
     <Content Remove="Views\Preferences\**" />
     <Content Remove="Views\Report\**" />
-    <Content Remove="Views\Route\**" />
     <Content Remove="Views\Stop\**" />
     <Content Remove="Views\Support\**" />
     <Content Remove="Views\Track\**" />
@@ -33,7 +31,6 @@
     <EmbeddedResource Remove="Views\Logs\**" />
     <EmbeddedResource Remove="Views\Preferences\**" />
     <EmbeddedResource Remove="Views\Report\**" />
-    <EmbeddedResource Remove="Views\Route\**" />
     <EmbeddedResource Remove="Views\Stop\**" />
     <EmbeddedResource Remove="Views\Support\**" />
     <EmbeddedResource Remove="Views\Track\**" />
@@ -43,19 +40,17 @@
     <None Remove="Views\Logs\**" />
     <None Remove="Views\Preferences\**" />
     <None Remove="Views\Report\**" />
-    <None Remove="Views\Route\**" />
     <None Remove="Views\Stop\**" />
     <None Remove="Views\Support\**" />
     <None Remove="Views\Track\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\RouteController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="Views\Home\About.cshtml" />
     <Content Remove="Views\Home\Contact.cshtml" />
+    <Content Remove="Views\Route\RenderRouteMap.cshtml" />
+    <Content Remove="Views\Route\StopDetails.cshtml" />
+    <Content Remove="Views\Route\Stops.cshtml" />
     <Content Remove="Views\User\ChangePassword.cshtml" />
     <Content Remove="Views\User\Reset.cshtml" />
     <Content Remove="Views\User\ResetPassword.cshtml" />
@@ -66,6 +61,8 @@
     <None Include="Views\App\Index.cshtml" />
     <None Include="Views\Home\About.cshtml" />
 	  <None Include="Views\Home\Contact.cshtml" />
+	  <None Include="Views\Route\List.cshtml" />
+	  <None Include="Views\Route\Map.cshtml" />
 	  <None Include="Views\Shared\Error.cshtml" />
 	  <None Include="Views\Shared\_ActionResponse.cshtml" />
 	  <None Include="Views\Shared\_AuthFooterLinks.cshtml" />

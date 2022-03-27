@@ -21,6 +21,7 @@ namespace FGPortal.Services
         public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<Driver> Driver { get; set; }
         public virtual DbSet<FGPortal.Models.Exception> Exception { get; set; }
+        public virtual DbSet<ExceptionType> ExceptionType { get; set; }
         public virtual DbSet<FileContent> FileContent { get; set; }
         public virtual DbSet<Fleet> Fleet { get; set; }
         public virtual DbSet<InternetUser> InternetUser { get; set; }
@@ -245,24 +246,24 @@ namespace FGPortal.Services
 
             modelBuilder.Entity<FGPortal.Models.Exception>(entity =>
             {
-                entity.HasIndex(e => new { e.ExceptionTypeId, e.DisplayPortal }, "ix_Exception_ExceptionTypeID_DisplayPortal_includes")
+                entity.HasIndex(e => new { e.ExceptionTypeID, e.DisplayPortal }, "ix_Exception_ExceptionTypeID_DisplayPortal_includes")
                     .HasFillFactor(100);
 
-                entity.HasIndex(e => new { e.ExceptionTypeId, e.RouteStopId }, "ix_Exception_ExceptionTypeID_RouteStopID")
+                entity.HasIndex(e => new { e.ExceptionTypeID, e.RouteStopID }, "ix_Exception_ExceptionTypeID_RouteStopID")
                     .HasFillFactor(100);
 
-                entity.HasIndex(e => e.ExceptionTypeId, "ix_Exception_ExceptionTypeID_includes")
+                entity.HasIndex(e => e.ExceptionTypeID, "ix_Exception_ExceptionTypeID_includes")
                     .HasFillFactor(100);
 
-                entity.HasIndex(e => e.ExceptionTypeId, "ix_Exception_ExceptionTypeID_includes4")
+                entity.HasIndex(e => e.ExceptionTypeID, "ix_Exception_ExceptionTypeID_includes4")
                     .HasFillFactor(100);
 
-                entity.HasIndex(e => new { e.RouteStopId, e.DisplayPortal }, "ix_Exception_RouteStopID_DisplayPortal_includes")
+                entity.HasIndex(e => new { e.RouteStopID, e.DisplayPortal }, "ix_Exception_RouteStopID_DisplayPortal_includes")
                     .HasFillFactor(100);
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.ID).HasColumnName("ID");
 
-                entity.Property(e => e.CcpmsgId)
+                entity.Property(e => e.CCPMsgID)
                     .HasMaxLength(250)
                     .IsUnicode(false)
                     .HasColumnName("CCPMsgID");
@@ -277,19 +278,19 @@ namespace FGPortal.Services
 
                 entity.Property(e => e.EmailAlertStep).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.ExceptionTypeId).HasColumnName("ExceptionTypeID");
+                entity.Property(e => e.ExceptionTypeID).HasColumnName("ExceptionTypeID");
 
                 entity.Property(e => e.Lat).HasColumnType("decimal(9, 6)");
 
                 entity.Property(e => e.Lon).HasColumnType("decimal(9, 6)");
 
-                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+                entity.Property(e => e.OrderID).HasColumnName("OrderID");
 
-                entity.Property(e => e.OrderParcelId).HasColumnName("OrderParcelID");
+                entity.Property(e => e.OrderParcelID).HasColumnName("OrderParcelID");
 
-                entity.Property(e => e.RouteStopId).HasColumnName("RouteStopID");
+                entity.Property(e => e.RouteStopID).HasColumnName("RouteStopID");
 
-                entity.Property(e => e.RouteStopParcelId).HasColumnName("RouteStopParcelID");
+                entity.Property(e => e.RouteStopParcelID).HasColumnName("RouteStopParcelID");
 
                 entity.Property(e => e.StatusCode)
                     .HasMaxLength(100)
@@ -307,17 +308,17 @@ namespace FGPortal.Services
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Exception)
-                    .HasForeignKey(d => d.OrderId)
+                    .HasForeignKey(d => d.OrderID)
                     .HasConstraintName("FK__Exception__Order__24285DB4");
 
                 entity.HasOne(d => d.OrderParcel)
                     .WithMany(p => p.Exception)
-                    .HasForeignKey(d => d.OrderParcelId)
+                    .HasForeignKey(d => d.OrderParcelID)
                     .HasConstraintName("FK__Exception__Order__251C81ED");
 
                 entity.HasOne(d => d.RouteStopParcel)
                     .WithMany(p => p.Exception)
-                    .HasForeignKey(d => d.RouteStopParcelId)
+                    .HasForeignKey(d => d.RouteStopParcelID)
                     .HasConstraintName("FK__Exception__Route__2610A626");
             });
 
@@ -1087,19 +1088,19 @@ namespace FGPortal.Services
 
                 entity.Property(e => e.LocationId).HasColumnName("LocationID");
 
-                entity.Property(e => e.Otp)
+                entity.Property(e => e.OTP)
                     .HasColumnType("decimal(5, 2)")
                     .HasColumnName("OTP");
 
                 entity.Property(e => e.RouteId).HasColumnName("RouteID");
 
-                entity.Property(e => e.SevenDayOtp)
+                entity.Property(e => e.SevenDayOTP)
                     .HasColumnType("decimal(5, 2)")
                     .HasColumnName("SevenDayOTP");
 
-                entity.Property(e => e.SumOtp).HasColumnName("SumOTP");
+                entity.Property(e => e.SumOTP).HasColumnName("SumOTP");
 
-                entity.Property(e => e.SumSevenDayOtp).HasColumnName("SumSevenDayOTP");
+                entity.Property(e => e.SumSevenDayOTP).HasColumnName("SumSevenDayOTP");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.RoutePerformance)

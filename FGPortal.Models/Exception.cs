@@ -7,25 +7,44 @@ namespace FGPortal.Models
 {
     public partial class Exception
     {
-        public int Id { get; set; }
-        public int ExceptionTypeId { get; set; }
-        public int? RouteStopId { get; set; }
-        public int? OrderId { get; set; }
-        public int? RouteStopParcelId { get; set; }
-        public int? OrderParcelId { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string CcpmsgId { get; set; }
-        public bool? DisplayPortal { get; set; }
-        public string CreatedBy { get; set; }
-        public string StatusCode { get; set; }
-        public string StatusComment { get; set; }
-        public decimal? Lat { get; set; }
-        public decimal? Lon { get; set; }
-        public string StatusDesc { get; set; }
-        public int? EmailAlertStep { get; set; }
+		public int ID { get; set; }
 
-        public virtual Order Order { get; set; }
-        public virtual OrderParcel OrderParcel { get; set; }
-        public virtual RouteStopParcel RouteStopParcel { get; set; }
-    }
+		public int ExceptionTypeID { get; set; }
+
+		public int? RouteStopID { get; set; }
+
+		public int? OrderID { get; set; }
+
+		public int? RouteStopParcelID { get; set; }
+
+		public int? OrderParcelID { get; set; }
+
+		public DateTime Timestamp { get; set; }
+
+		public string CCPMsgID { get; set; }
+
+		public bool DisplayPortal { get; set; }
+
+		public string CreatedBy { get; set; }
+
+		public string StatusCode { get; set; }
+
+		public string StatusComment { get; set; }
+
+		public decimal? Lat { get; set; }
+
+		public decimal? Lon { get; set; }
+
+		public string StatusDesc { get; set; }
+
+		public int? EmailAlertStep { get; set; }
+
+		public virtual ExceptionType ExceptionType { get; set; }
+
+		public virtual Order Order { get; set; }
+
+		public virtual OrderParcel OrderParcel { get; set; }
+
+		public virtual RouteStopParcel RouteStopParcel { get; set; }
+	}
 }

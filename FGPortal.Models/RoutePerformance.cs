@@ -10,12 +10,12 @@ namespace FGPortal.Models
         public int Id { get; set; }
         public int RouteId { get; set; }
         public int LocationId { get; set; }
-        public int? SumOtp { get; set; }
+        public int? SumOTP { get; set; }
         public int? SumStops { get; set; }
-        public int? SumSevenDayOtp { get; set; }
+        public int? SumSevenDayOTP { get; set; }
         public int? SumSevenDayStops { get; set; }
-        public decimal? Otp { get; set; }
-        public decimal? SevenDayOtp { get; set; }
+        public decimal? OTP { get; set; }
+        public decimal? SevenDayOTP { get; set; }
 
         public virtual Location Location { get; set; }
         public virtual Route Route { get; set; }
