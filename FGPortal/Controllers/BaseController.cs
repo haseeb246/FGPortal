@@ -49,25 +49,25 @@ namespace FGPortal.Controllers
             if (!string.IsNullOrWhiteSpace(token))
             {
 
-                //var user =  _unitOfWork.InternetUsers.Query()
-                //    .Include(s => s.InternetUserViewable)
-                //    .Include(s => s.InternetUserMapping)
-                // .Include(s => s.UserPreference).FirstOrDefault(s => s.Token == token && s.Active);
-                //if (user != null)
-                //{
-                //    HttpContext.Items["token"] = user.Token;
+                var user = _unitOfWork.InternetUsers.Query()
+                    .Include(s => s.InternetUserViewable)
+                    .Include(s => s.InternetUserMapping)
+                 .Include(s => s.UserPreference).FirstOrDefault(s => s.Token == token && s.Active);
+                if (user != null)
+                {
+                    HttpContext.Items["token"] = user.Token;
 
-                //    UpdateStop = user.UpdateStop;
-                //    UserId = user.Id;
-                //    UserEmail = user.Email;
-                //    CustomerId = user.InternetUserMapping.FirstOrDefault()?.CustomerId;
-                //    CourierId = (CustomerId.HasValue ? null : user.InternetUserMapping.FirstOrDefault()?.CourierId);
-                //    Viewables = user.InternetUserViewable.ToList();
-                //    TimeZoneId = user.UserPreference.FirstOrDefault((UserPreference x) => x.Key == UserPreferenceKey.TimeZoneInfo && x.Value != DefaultValues.Default_TimeZone)?.Value;
-                //    TimeZoneId = ((TimeZoneId == DefaultValues.Default_TimeZone) ? null : TimeZoneId);
-                //    double.TryParse(Request.GetCookie("timezone-offset"), out var result);
-                //    TimeZoneCookieOffset = result;
-                //}
+                    UpdateStop = user.UpdateStop;
+                    UserId = user.Id;
+                    UserEmail = user.Email;
+                    CustomerId = user.InternetUserMapping.FirstOrDefault()?.CustomerId;
+                    CourierId = (CustomerId.HasValue ? null : user.InternetUserMapping.FirstOrDefault()?.CourierId);
+                    Viewables = user.InternetUserViewable.ToList();
+                    TimeZoneId = user.UserPreference.FirstOrDefault((UserPreference x) => x.Key == UserPreferenceKey.TimeZoneInfo && x.Value != DefaultValues.Default_TimeZone)?.Value;
+                    TimeZoneId = ((TimeZoneId == DefaultValues.Default_TimeZone) ? null : TimeZoneId);
+                    double.TryParse(Request.GetCookie("timezone-offset"), out var result);
+                    TimeZoneCookieOffset = result;
+                }
             }
 
 

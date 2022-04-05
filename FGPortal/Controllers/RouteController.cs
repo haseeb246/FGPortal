@@ -38,13 +38,13 @@ namespace FGPortal.Controllers
                         List<int> viewableCouriers = (from x in base.Viewables
                                                       where x.CourierId.HasValue
                                                       select x.CourierId ?? 0).ToList();
-                        list = ((!(postDate >= DateTime.Today.Date.AddDays(-21.0))) ? (from x in (from x in db.Route
+                        list = ((!(postDate >= DateTime.Today.Date.AddDays(-90.0))) ? (from x in (from x in db.Route
                                                                                                   where x.Active && db.RouteStopArchive.Any((RouteStopArchive y) => y.RouteId == x.Id && y.PostDate == postDate && y.Active == (bool?)true) && (CustomerId.HasValue ? ((int?)x.CustomerId == CustomerId && (viewableCouriers.Count == 0 || viewableCouriers.Contains(x.CourierId))) : ((int?)x.CourierId == CourierId && (viewableCustomers.Count == 0 || viewableCustomers.Contains(x.CustomerId))))
                                                                                                   select new
                                                                                                   {
                                                                                                       Route = x,
-                                                                                                      Stops = db.RouteStopArchive.Where((RouteStopArchive y) => y.RouteId == x.Id && y.PostDate == postDate && y.Active == (bool?)true),
-                                                                                                      UserPreferences = db.UserPreference.Where((UserPreference y) => y.UserId == UserId)
+                                                                                                      Stops = db.RouteStopArchive.Where((RouteStopArchive y) => y.RouteId == x.Id && y.PostDate == postDate && y.Active == (bool?)true).ToList(),
+                                                                                                      UserPreferences = db.UserPreference.Where((UserPreference y) => y.UserId == UserId).ToList()
                                                                                                   } into obj
                                                                                                   select new
                                                                                                   {
@@ -117,8 +117,8 @@ namespace FGPortal.Controllers
                                                                                                                         select new
                                                                                                                         {
                                                                                                                             Route = x,
-                                                                                                                            Stops = x.RouteStop.Where((RouteStop y) => y.PostDate == postDate && (y.Active == (bool?)true || y.Remarks.ToLower().Contains("inactiveroute"))),
-                                                                                                                            UserPreferences = db.UserPreference.Where((UserPreference y) => y.UserId == UserId)
+                                                                                                                            Stops = x.RouteStop.Where((RouteStop y) => y.PostDate == postDate && (y.Active == (bool?)true || y.Remarks.ToLower().Contains("inactiveroute"))).ToList(),
+                                                                                                                            UserPreferences = db.UserPreference.Where((UserPreference y) => y.UserId == UserId).ToList()
                                                                                                                         } into obj
                                                                                                                         select new
                                                                                                                         {
@@ -351,7 +351,7 @@ namespace FGPortal.Controllers
                                                                                                                         select new
                                                                                                                         {
                                                                                                                             Route = x,
-                                                                                                                            Stops = x.RouteStop.Where((RouteStop y) => y.PostDate == postDate && (y.Active == (bool?)true || y.Remarks.ToLower().Contains("inactiveroute"))),
+                                                                                                                            Stops = x.RouteStop.Where((RouteStop y) => y.PostDate == postDate && (y.Active == (bool?)true || y.Remarks.ToLower().Contains("inactiveroute"))).ToList(),
                                                                                                                             UserPreferences = db.UserPreference.Where((UserPreference y) => y.UserId == UserId)
                                                                                                                         } into obj
                                                                                                                         select new

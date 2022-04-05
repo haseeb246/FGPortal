@@ -40,14 +40,14 @@ namespace FGPortal.Models
 
         public virtual ICollection<Exception> Exception { get; set; }
 
-        public virtual ICollection<ExceptionType> ExceptionType1 { get; set; }
+        //public virtual ICollection<ExceptionType> ExceptionType1 { get; set; }
 
-        public virtual ExceptionType ExceptionType2 { get; set; }
+        //public virtual ExceptionType ExceptionType2 { get; set; }
 
         public ExceptionType()
         {
             Exception = new HashSet<Exception>();
-            ExceptionType1 = new HashSet<ExceptionType>();
+            //ExceptionType1 = new HashSet<ExceptionType>();
         }
     }
 }

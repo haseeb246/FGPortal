@@ -2,6 +2,7 @@
 #nullable disable
 using FGPortal.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace FGPortal.Services
 {
@@ -14,6 +15,17 @@ namespace FGPortal.Services
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("Default");
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         public virtual DbSet<Courier> Courier { get; set; }
