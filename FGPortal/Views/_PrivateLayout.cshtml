@@ -90,7 +90,7 @@
     @RenderSection("Scripts", false)
     <script>
         // Set utc offset
-        courierConnect.helpers.setCookie('timezone-offset', moment().utcOffset());
+        FGPortal.helpers.setCookie('timezone-offset', moment().utcOffset());
         function printDiv(divID) {
             var w = window.open();
             w.document.write($('#' + divID).html());

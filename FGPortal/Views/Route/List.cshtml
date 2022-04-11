@@ -38,7 +38,7 @@
     }
     function filterRoutes(type, setCookie) {
         if (setCookie) {
-            courierConnect.helpers.setCookie('filter-dr-display', type);
+            FGPortal.helpers.setCookie('filter-dr-display', type);
         }
         else {
             $('#filter-dr-d').val(type);
@@ -55,7 +55,7 @@
         }
     }
     function filterRoutesByDate(element) {
-        courierConnect.helpers.setCookie('filter-dr-postdate', element.value);
+        FGPortal.helpers.setCookie('filter-dr-postdate', element.value);
         $('#content-div').hide();
         $('#loading-screen').show();
         window.location.replace('@Url.Action("List", "Route")?pDate=' + encodeURIComponent(element.value));

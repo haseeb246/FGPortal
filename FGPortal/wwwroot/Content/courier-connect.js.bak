@@ -96,8 +96,8 @@
             _openInfoWindows = [];
 
             var mapElement = document.getElementById(_mapDOMElementID);
-            if (!courierConnect.helpers.isNullOrEmpty(mapElement)) {
-                if (courierConnect.helpers.isNullOrEmpty(mapOptions)) {
+            if (!FGPortal.helpers.isNullOrEmpty(mapElement)) {
+                if (FGPortal.helpers.isNullOrEmpty(mapOptions)) {
                     mapOptions = {
                         zoom: 4.3,
                         center: { lat: 38.4987789, lng: -98.3200779 },
@@ -111,7 +111,7 @@
             return _map;
         }
         function ensureMapSetup() {
-            if (courierConnect.helpers.isNullOrEmpty(_map)) {
+            if (FGPortal.helpers.isNullOrEmpty(_map)) {
                 createMap();
             }
         }
@@ -151,14 +151,14 @@
                     }
                 });
                 marker.addListener('click', function () {
-                    if (!courierConnect.helpers.isNullOrEmpty(this.info.marker.state)) {
+                    if (!FGPortal.helpers.isNullOrEmpty(this.info.marker.state)) {
                         this.info.close();
                         this.setVisible(false);
                         _viewableStates.push('state-' + this.info.marker.state);
                         applyFilter();
                         zoomToFitStateMarkers('state-' + this.info.marker.state)
                     }
-                    else if (!courierConnect.helpers.isNullOrEmpty(this.info.marker.url)) {
+                    else if (!FGPortal.helpers.isNullOrEmpty(this.info.marker.url)) {
                         window.open(this.info.marker.url, '_blank');
                     }
                     else {
@@ -205,14 +205,14 @@
         }
         function showMarkersByClasses(classes) {
             for (var i = 0; i < _markers.length; i++) {
-                if (courierConnect.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes))
+                if (FGPortal.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes))
                     _markers[i].setVisible(true);
             }
         }
         function showMarkersByClassesForStateFilter(classes) {
             for (var i = 0; i < _markers.length; i++) {
-                if (courierConnect.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes)
-                    && courierConnect.helpers.isIntersectAny(_markers[i].info.marker.classes.split(','), _viewableStates)) {
+                if (FGPortal.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes)
+                    && FGPortal.helpers.isIntersectAny(_markers[i].info.marker.classes.split(','), _viewableStates)) {
                     _markers[i].setVisible(true);
                 } else if (_markers[i].info.marker.classes.indexOf('state-marker') === -1) {
                     _markers[i].setVisible(false);
@@ -228,7 +228,7 @@
         }
         function hideMarkersByClasses(classes) {
             for (var i = 0; i < _markers.length; i++) {
-                if (courierConnect.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes))
+                if (FGPortal.helpers.isIntersect(_markers[i].info.marker.classes.split(','), classes))
                     _markers[i].setVisible(false);
             }
         }
@@ -250,7 +250,7 @@
         function zoomToFitStateMarkers(state) {
             var bounds = new google.maps.LatLngBounds();
             for (var i = 0; i < _markers.length; i++) {
-                if (courierConnect.helpers.isIntersectAny(_markers[i].info.marker.classes.split(','), [ state ]))
+                if (FGPortal.helpers.isIntersectAny(_markers[i].info.marker.classes.split(','), [ state ]))
                     bounds.extend(_markers[i].getPosition());
             }
             _map.fitBounds(bounds);
@@ -273,8 +273,8 @@
         self.removeWeatherOverlay = removeWeatherOverlay;
 
         function init() {
-            _apiID = courierConnect.helpers.isLocalhost() ? 'wgE96YE3scTQLKjnqiMsv' : 'C1veGbQiB4NuZNHQPRSyr';
-            _apiSe = courierConnect.helpers.isLocalhost() ? 'tlyy22v5uBRBcm8lWeP0Y6ZISPLDVKGWXTJH9kYb' : '6FcDLEUZMnFrQHWGFiQKR7p3sUpECKXeR1Vo3F6c';
+            _apiID = FGPortal.helpers.isLocalhost() ? 'wgE96YE3scTQLKjnqiMsv' : 'C1veGbQiB4NuZNHQPRSyr';
+            _apiSe = FGPortal.helpers.isLocalhost() ? 'tlyy22v5uBRBcm8lWeP0Y6ZISPLDVKGWXTJH9kYb' : '6FcDLEUZMnFrQHWGFiQKR7p3sUpECKXeR1Vo3F6c';
 		
         function applyWeatherOverlay(map) {
             removeWeatherOverlay();
@@ -297,8 +297,8 @@
         init();
     }
 
-    window.courierConnect = new coreLib();
-    window.courierConnect.helpers = new helpersLib();
-    window.courierConnect.maps = new googleMapLib();
-    window.courierConnect.aeris = new aerisLib();
+    window.FGPortal = new coreLib();
+    window.FGPortal.helpers = new helpersLib();
+    window.FGPortal.maps = new googleMapLib();
+    window.FGPortal.aeris = new aerisLib();
 })(window, $);

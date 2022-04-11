@@ -11,7 +11,7 @@ namespace FGPortal.Models
 
 		public DateTime? ToDate { get; set; }
 
-		//public List<SP_AdHoc_GetData_Result> Data { get; set; }
+		public List<SP_AdHoc_GetData_Result> Data { get; set; }
 
 		public bool ShowAllColumns
 		{
@@ -27,7 +27,7 @@ namespace FGPortal.Models
 
 		public AdHocModel()
 		{
-			//Data = new List<SP_AdHoc_GetData_Result>();
+			Data = new List<SP_AdHoc_GetData_Result>();
 		}
 	}
 }

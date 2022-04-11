@@ -60,6 +60,9 @@ namespace FGPortal.Services
         public virtual DbSet<TransactionLog> TransactionLog { get; set; }
         public virtual DbSet<UserPreference> UserPreference { get; set; }
         public virtual DbSet<UserRestriction> UserRestriction { get; set; }
+        public virtual DbSet<SP_AdHoc_GetData_Result> SP_AdHoc_GetData_Result { get; set; }
+
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

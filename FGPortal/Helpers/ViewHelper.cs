@@ -32,17 +32,17 @@ namespace FGPortal.Helpers
 			});
 			try
 			{
-				AppDbContext courierConnectEntities = new AppDbContext();
+				AppDbContext FGPortalEntities = new AppDbContext();
 				try
 				{
-					list.AddRange((from x in (IQueryable<ExceptionType>)courierConnectEntities.ExceptionType
+					list.AddRange((from x in (IQueryable<ExceptionType>)FGPortalEntities.ExceptionType
 								   where x.Active && x.Code != "late" && x.DisplayLegend
 								   orderby x.Severity descending
 								   select x).ToList());
 				}
 				finally
 				{
-					((IDisposable)courierConnectEntities)?.Dispose();
+					((IDisposable)FGPortalEntities)?.Dispose();
 				}
 			}
 			catch
@@ -55,10 +55,10 @@ namespace FGPortal.Helpers
 		{
 			try
 			{
-				AppDbContext courierConnectEntities = new AppDbContext();
+				AppDbContext FGPortalEntities = new AppDbContext();
 				try
 				{
-					List<UserPreference> source = ((IQueryable<InternetUser>)courierConnectEntities.InternetUser).FirstOrDefault((InternetUser x) => x.Id == internetUserId).UserPreference.ToList();
+					List<UserPreference> source = ((IQueryable<InternetUser>)FGPortalEntities.InternetUser).FirstOrDefault((InternetUser x) => x.Id == internetUserId).UserPreference.ToList();
 					string text = null;
 					if (eType.Code == ExceptionTypeCode.Exception_Late1.GetKey())
 					{
@@ -80,7 +80,7 @@ namespace FGPortal.Helpers
 				}
 				finally
 				{
-					((IDisposable)courierConnectEntities)?.Dispose();
+					((IDisposable)FGPortalEntities)?.Dispose();
 				}
 			}
 			catch

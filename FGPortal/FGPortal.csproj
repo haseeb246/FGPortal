@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Analytics\**" />
     <Compile Remove="Views\App\**" />
     <Compile Remove="Views\Error\**" />
     <Compile Remove="Views\Logs\**" />
@@ -16,7 +15,6 @@
     <Compile Remove="Views\Stop\**" />
     <Compile Remove="Views\Support\**" />
     <Compile Remove="Views\Track\**" />
-    <Content Remove="Views\Analytics\**" />
     <Content Remove="Views\App\**" />
     <Content Remove="Views\Error\**" />
     <Content Remove="Views\Logs\**" />
@@ -25,7 +23,6 @@
     <Content Remove="Views\Stop\**" />
     <Content Remove="Views\Support\**" />
     <Content Remove="Views\Track\**" />
-    <EmbeddedResource Remove="Views\Analytics\**" />
     <EmbeddedResource Remove="Views\App\**" />
     <EmbeddedResource Remove="Views\Error\**" />
     <EmbeddedResource Remove="Views\Logs\**" />
@@ -34,7 +31,6 @@
     <EmbeddedResource Remove="Views\Stop\**" />
     <EmbeddedResource Remove="Views\Support\**" />
     <EmbeddedResource Remove="Views\Track\**" />
-    <None Remove="Views\Analytics\**" />
     <None Remove="Views\App\**" />
     <None Remove="Views\Error\**" />
     <None Remove="Views\Logs\**" />
@@ -58,6 +54,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Analytics\AdHoc.cshtml" />
+    <None Include="Views\Analytics\Charts.cshtml" />
+    <None Include="Views\Analytics\GenerateAdHocData.cshtml" />
     <None Include="Views\App\Index.cshtml" />
     <None Include="Views\Home\About.cshtml" />
 	  <None Include="Views\Home\Contact.cshtml" />
@@ -76,12 +75,12 @@
     <None Include="wwwroot\Content\css\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\Content\css\bootstrap.css.map" />
     <None Include="wwwroot\Content\css\bootstrap.min.css.map" />
-    <None Include="wwwroot\Content\docs\CourierConnect_MapView.docx" />
-    <None Include="wwwroot\Content\docs\CourierConnect_Preferences.docx" />
-    <None Include="wwwroot\Content\docs\CourierConnect_RoutesView.docx" />
-    <None Include="wwwroot\Content\docs\CourierConnect_RunReports.docx" />
-    <None Include="wwwroot\Content\docs\CourierConnect_TLogs.docx" />
-    <None Include="wwwroot\Content\docs\CourierConnect_TrackShipments.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_MapView.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_Preferences.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_RoutesView.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_RunReports.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_TLogs.docx" />
+    <None Include="wwwroot\Content\docs\FGPortal_TrackShipments.docx" />
     <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.svg" />
     <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="wwwroot\Content\js\bootstrap.js" />

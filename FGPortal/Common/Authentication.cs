@@ -33,9 +33,9 @@ namespace FGPortal
             {
 
              
-                using (AppDbContext courierConnectEntities = new AppDbContext())
+                using (AppDbContext FGPortalEntities = new AppDbContext())
                 {
-                    return courierConnectEntities.InternetUser.Include((InternetUser x) => x.InternetUserMapping)
+                    return FGPortalEntities.InternetUser.Include((InternetUser x) => x.InternetUserMapping)
                         .Include((InternetUser x) => x.InternetUserViewable).Include((InternetUser x) => x.UserPreference)
                         .FirstOrDefault((InternetUser x) => x.Token == token && x.Active);
                 }
